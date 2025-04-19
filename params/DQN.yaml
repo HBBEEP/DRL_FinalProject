@@ -1,0 +1,27 @@
+DQN : 
+  experiment_1:
+    BATCH_SIZE : 64
+    GAMMA : 0.99
+    EPS_START : 0.9
+    EPS_END : 0.01
+    EPS_DECAY : 0.9999
+    TARGET_UPDATE : 20
+    n_actions : 4
+
+  experiment_2:
+    BATCH_SIZE : 64
+    GAMMA : 0.99
+    EPS_START : 0.9
+    EPS_END : 0.01
+    EPS_DECAY : 0.9999
+    TARGET_UPDATE : 20
+    n_actions : 4
+
+  experiment_3:
+    BATCH_SIZE : 64
+    GAMMA : 0.99
+    EPS_START : 0.9
+    EPS_END : 0.01
+    EPS_DECAY : 0.9999
+    TARGET_UPDATE : 20
+    n_actions : 4
