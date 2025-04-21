@@ -1,23 +1,91 @@
+import torch
+import numpy as np
+from Game_2048.board import Board, main_loop
+import math,random
+from collections import namedtuple, deque
 
+Transition = namedtuple('Transition',
+                        ('state', 'action', 'next_state', 'reward'))
+
+class ReplayMemory(object):
+    def __init__(self, capacity):
+        self.memory = deque([],maxlen=capacity)
+
+    def push(self, *args):
+        self.memory.append(Transition(*args))
+
+    def sample(self, batch_size):
+        return random.sample(self.memory, batch_size)
+
+    def __len__(self):
+        return len(self.memory)
+    
 class BaseAlgorithm():
     def __init__(
         self,
-
+        device:str,
+        policy_network:torch.nn.Module,
+        target_network:torch.nn.Module,
+        initial_epsilon:float,
+        epsilon_decay:float,
+        final_epsilon:float,
+        learning_rate:float,
+        tau:float,
+        batch_size:int,
+        buffer_size:int
     ):
-        pass
+        self.policy_network = policy_network
+        self.target_network= target_network
+        self.epsilon = initial_epsilon
+        self.epsilon_decay = epsilon_decay
+        self.final_epsilon = final_epsilon
+        self.learning_rate = learning_rate
+        self.tau = tau
+        self.batch_size = batch_size
+        self.buffer_size = buffer_size
+        self.device = device
 
-    def encode_state():
-        pass
+        self.policy_optimizer = torch.optim.Adam(self.policy_network.parameters(), lr=learning_rate)
+
+        self.memory = ReplayMemory(capacity=self.buffer_size)          
+
+    def encode_state(self,current_board:np.ndarray) -> torch.Tensor:
+        board_flat = [0 if e == 0 else int(math.log(e, 2)) for e in current_board.flatten()]
+        board_flat = torch.LongTensor(board_flat)
+        board_flat = torch.nn.functional.one_hot(board_flat, num_classes=16).float().flatten()
+        board_flat = board_flat.reshape(1, 4, 4, 16).permute(0, 3, 1, 2).to(device=self.device)
+        return board_flat
     
-    def select_action():
-        pass
+    def select_action(self,encode_state:torch.Tensor) -> torch.Tensor :
+        sample = random.random()
+        self.epsilon = max(self.final_epsilon, self.epsilon*self.epsilon_decay)
+        if sample > self.epsilon:
+            with torch.no_grad():
+                return self.policy_network(encode_state).max(1)[1].view(1, 1)
+        else:
+            return torch.tensor([[random.randrange(4)]],device=self.device, dtype=torch.long)
+        
+    def get_batch_dataset(self):
+        transitions = self.memory.sample(self.batch_size)
+        batch = Transition(*zip(*transitions))
+        return batch
+        
+    def update_policy_network(self,loss):
+        self.policy_optimizer.zero_grad()
+        loss.backward()
+        self.policy_optimizer.step() 
 
-    def optimize_model():
-        pass
+    def update_target_network(self):
+        policy_net_weight = self.policy_network.state_dict()
+        target_net_weight = self.target_network.state_dict()
 
-    def same_move(s):
-        pass
+        for key in policy_net_weight:
+            target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
 
-    def train():
-        pass
+        self.target_network.load_state_dict(target_net_weight)
+
+
+    def same_move(self, state, next_state, last_memory):
+        return torch.eq(state, last_memory.state).all() and torch.eq(next_state, last_memory.next_state).all()
+
 

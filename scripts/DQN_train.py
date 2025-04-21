@@ -98,11 +98,11 @@ policy_net = DQN().to(device)
 target_net = DQN().to(device)
 target_net.load_state_dict(policy_net.state_dict())
 
-torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
-torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
+# torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
+# torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
 
-policy_net.load_state_dict(torch.load('/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth'))
-target_net.load_state_dict(torch.load('/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth'))
+# policy_net.load_state_dict(torch.load('/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth'))
+# target_net.load_state_dict(torch.load('/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth'))
 target_net.eval()
 policy_net.train()
 
@@ -138,6 +138,10 @@ def optimize_model():
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
+    print(state_batch.shape)
+    print(action_batch.shape)
+    print(reward_batch.shape)
+
     state_action_values = policy_net(state_batch).gather(1, action_batch)
 
     next_state_values = torch.zeros(BATCH_SIZE, device=device)
@@ -165,6 +169,7 @@ def main():
     for i_episode in range(NUM_EPISODES):
         print(f"Episode {i_episode}")
         game.reset()
+        print(game.board)
         state = encode_state(game.board).float()
         duplicate = False
         non_valid_count, valid_count = 0, 0
@@ -198,6 +203,8 @@ def main():
 
             # if not duplicate:
             if next_state == None or len(memory) == 0 or not same_move(state, next_state, memory.memory[-1]):
+                print(state)
+                print(state.shape)
                 memory.push(state, action, next_state, reward)
             
             # if next_state != None:
@@ -217,6 +224,9 @@ def main():
                 print(f"Episode Score: {game.total_score}")
                 print(f"Non valid move count: {non_valid_count}")
                 print(f"Valid move count: {valid_count}")
+                dummy = encode_state(game.board)
+                print(dummy)
+                print(dummy.shape)
                 total_scores.append(game.total_score)
                 best_tile_list.append(game.board.max())
                 if i_episode > 50:
@@ -229,13 +239,13 @@ def main():
             target_net.load_state_dict(policy_net.state_dict())
             policy_net.train()
         
-        if i_episode % 100 == 0:
-            torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
-            torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
+        # if i_episode % 100 == 0:
+            # torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
+            # torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
 
     print('Complete')
-    torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
-    torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
+    # torch.save(policy_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/policy_net.pth')
+    # torch.save(target_net.state_dict(), '/home/hbbeep-p/Documents/GitHub/DRL_FinalProject/weight/DQN/experiment_1/target_net.pth')
 
     print(total_scores)
     print(best_tile_list)
