@@ -1,5 +1,6 @@
 /scripts/__pycache__
 /RL_Algorithm/Algorithm/__pycache__
+/RL_Algorithm/__pycache__
 /Game_2048/__pycache__
 
 /weight/DQN/experiment_1
@@ -10,3 +11,4 @@
 
 /weight/DuelingDQN/experiment_1
 /weight/DuelingDQN/experiment_2
+

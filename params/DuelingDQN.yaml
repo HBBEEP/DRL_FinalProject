@@ -1,27 +1,36 @@
 DuelingDQN : 
   experiment_1:
-    BATCH_SIZE : 64
-    GAMMA : 0.99
-    EPS_START : 0.9
-    EPS_END : 0.01
-    EPS_DECAY : 0.9999
-    TARGET_UPDATE : 20
-    n_actions : 4
+    n_episodes : 10
+    target_update_interval : 1
+    initial_epsilon : 1.0
+    epsilon_decay : 0.998
+    final_epsilon : 0.05
+    learning_rate : 0.001
+    discount_factor :  0.99
+    tau : 0.95
+    batch_size : 8
+    buffer_size : 100
 
   experiment_2:
-    BATCH_SIZE : 64
-    GAMMA : 0.99
-    EPS_START : 0.9
-    EPS_END : 0.01
-    EPS_DECAY : 0.9999
-    TARGET_UPDATE : 20
-    n_actions : 4
+    n_episodes : 100
+    target_update_interval : 1
+    initial_epsilon : 1.0
+    epsilon_decay : 0.998
+    final_epsilon : 0.05
+    learning_rate : 0.001
+    discount_factor :  0.99
+    tau : 0.95
+    batch_size : 8
+    buffer_size : 100
 
   experiment_3:
-    BATCH_SIZE : 64
-    GAMMA : 0.99
-    EPS_START : 0.9
-    EPS_END : 0.01
-    EPS_DECAY : 0.9999
-    TARGET_UPDATE : 20
-    n_actions : 4
+    n_episodes : 10
+    target_update_interval : 1
+    initial_epsilon : 1.0
+    epsilon_decay : 0.998
+    final_epsilon : 0.05
+    learning_rate : 0.001
+    discount_factor :  0.99
+    tau : 0.95
+    batch_size : 8
+    buffer_size : 100

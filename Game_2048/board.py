@@ -71,7 +71,7 @@ class Board():
         self.board = new_board
         self.fill_cell()
 
-def main_loop(b, direction):
+def main_loop(b:Board, direction):
     new_board = b.move(direction)
     moved = False
     if (new_board == b.board).all():
