@@ -5,6 +5,10 @@
 python scripts/DQN_train.py 
 ```
 
+```
+python scripts/train.py --algo DQN --exp experiment_1 --debug False
+```
+
 ## Tree
 ```
 .
