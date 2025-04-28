@@ -111,19 +111,18 @@ for episode in range(selected_config['n_episodes']):
             action = action.to(dtype=torch.long)
             agent.memory.push(state, action , next_state, reward)
         
-        if len(agent.memory) >= agent.batch_size:
-            loss = agent.update()  
-
-        if step_count%selected_config['target_update_interval'] == 0:
-            agent.update_target_network()     
+        # if len(agent.memory) >= agent.batch_size:
+        #     loss = agent.update()    
 
         step_count += 1
         state = next_state
 
         if debug_flag:
-            board_visualizer.update(board_env.board,board_env.total_score)
+            board_visualizer.update(board_env.board,board_env.total_score,delay=0.0)
 
         if done:
+            for _ in range(100):
+                loss = agent.update() 
             board_visualizer.done()
             print(f"=============== Episode : {episode} ======================")
             print(f"Epsilon : {agent.epsilon}")
@@ -131,6 +130,7 @@ for episode in range(selected_config['n_episodes']):
             print(f"Non valid move count: {non_valid_count}")
             print(f"Valid move count: {valid_count}")
             print(f"policy network loss: {loss}")
+            print(f"training device: {agent.device}")
             print("Weights changed:", not torch.allclose(agent.previous_weight, agent.policy_network.dense1.weight, rtol=1e-05, atol=1e-08))
             agent.previous_weight = agent.policy_network.dense1.weight.detach().clone()
             total_scores.append(board_env.total_score)
@@ -145,6 +145,9 @@ for episode in range(selected_config['n_episodes']):
             print("\n")
 
             agent.epsilon_update()
+
+            if episode%selected_config['target_update_interval'] == 0:
+                agent.update_target_network()   
             break
 
     if average > best_scores:

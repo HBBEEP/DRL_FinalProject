@@ -104,6 +104,8 @@ class DQN(BaseAlgorithm):
         Calculate loss from each algorithm
         """
         batch = self.get_batch_dataset()
+        if batch == None:
+            return None
         loss = self.calculate_loss(batch=batch) 
         self.update_policy_network(loss)
 

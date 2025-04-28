@@ -69,6 +69,9 @@ class BaseAlgorithm():
             return torch.tensor([[random.randrange(4)]],device=self.device, dtype=torch.long)
         
     def get_batch_dataset(self):
+        if len(self.memory) < self.batch_size:
+            return None
+        
         transitions = self.memory.sample(self.batch_size)
         batch = Transition(*zip(*transitions))
         return batch
@@ -86,6 +89,9 @@ class BaseAlgorithm():
             target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
 
         self.target_network.load_state_dict(target_net_weight)
+
+        # self.target_network.load_state_dict(self.policy_network.state_dict())
+        self.policy_network.train()
 
 
     def same_move(self, state, next_state, last_memory):

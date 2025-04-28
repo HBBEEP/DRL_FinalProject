@@ -138,9 +138,9 @@ def optimize_model():
     action_batch = torch.cat(batch.action)
     reward_batch = torch.cat(batch.reward)
 
-    print(state_batch.shape)
-    print(action_batch.shape)
-    print(reward_batch.shape)
+    # print(state_batch.shape)
+    # print(action_batch.shape)
+    # print(reward_batch.shape)
 
     state_action_values = policy_net(state_batch).gather(1, action_batch)
 
@@ -150,6 +150,7 @@ def optimize_model():
 
     criterion = nn.MSELoss()
     loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
+    print(f"loss : {loss.item()}")
 
     optimizer.zero_grad()
     loss.backward()
