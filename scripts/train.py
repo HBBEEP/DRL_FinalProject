@@ -6,18 +6,33 @@ import tqdm,torch
 from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
 from RL_Algorithm.Algorithm.DQN import DQN
-import yaml
+
+from scripts.board_visualizer import Board_Animator
+import yaml,json
 import argparse
+import pandas as pd
+import time
+
+def str2bool(value):
+    """Convert a string to a boolean."""
+    if value.lower() in ['true', '1', 't', 'y', 'yes']:
+        return True
+    elif value.lower() in ['false', '0', 'f', 'n', 'no']:
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Select algorithm and experiment.')
 parser.add_argument('--algo', type=str, required=True, help='Name of the algorithm (e.g., DuelingDQN)')
 parser.add_argument('--exp', type=str, required=True, help='Experiment name (e.g., experiment_1)')
-parser.add_argument('--debug', type=bool, default=False, help='True if you want to track the training process')
+parser.add_argument('--debug', type=str2bool, default=False, help='True if you want to track the training process')
 args = parser.parse_args()
 
 debug_flag = args.debug
+print(args.debug)
+print(type(args.debug))
 
 # Load the YAML file
 with open(f'params/{args.algo}.yaml', 'r') as file:
@@ -30,6 +45,10 @@ print(selected_config)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 board_env = Board()
+board_visualizer = Board_Animator()
+
+if not os.path.exists(selected_config["save_path"]):
+    os.makedirs(selected_config["save_path"])
 
 #//////////////// Algorithm selection ///////////////////////////
 agent = DQN(initial_epsilon=selected_config['initial_epsilon'],
@@ -40,23 +59,32 @@ agent = DQN(initial_epsilon=selected_config['initial_epsilon'],
             tau=selected_config['tau'],
             batch_size=selected_config['batch_size'],
             buffer_size=selected_config['buffer_size'],
+            hidden_dim=selected_config['hidden_dim'],
             device=device)
 #///////////////////////////////////////////////////////////////
 
 total_scores = []
 best_tile_list = []
+loss_list = []
+all_episode_action = []
+best_scores = 0
+average = 0
+
+start_time = time.time()
 
 for episode in range(selected_config['n_episodes']):
     board_env.reset()
     done = False
     cumulative_reward = 0
     step_count = 0
+    action_list = []
 
     state = agent.encode_state(board_env.board)
     non_valid_count, valid_count = 0, 0
     while not done:
         # agent stepping
         action = agent.select_action(state)
+        action_list.append(action.item())
         old_score = board_env.total_score
 
         # env stepping
@@ -83,31 +111,66 @@ for episode in range(selected_config['n_episodes']):
             action = action.to(dtype=torch.long)
             agent.memory.push(state, action , next_state, reward)
         
-        # if len(agent.memory) >= agent.batch_size:
-        #     loss = agent.update()       
+        if len(agent.memory) >= agent.batch_size:
+            loss = agent.update()  
 
-        # if step_count%target_update_interval == 0:
-        #     agent.update_target_network()
+        if step_count%selected_config['target_update_interval'] == 0:
+            agent.update_target_network()     
 
         step_count += 1
         state = next_state
 
-        if done:
-            for _ in range(100):
-                loss = agent.update()
+        if debug_flag:
+            board_visualizer.update(board_env.board,board_env.total_score)
 
-            print(board_env.board)
+        if done:
+            board_visualizer.done()
+            print(f"=============== Episode : {episode} ======================")
+            print(f"Epsilon : {agent.epsilon}")
             print(f"Episode Score: {board_env.total_score}")
             print(f"Non valid move count: {non_valid_count}")
             print(f"Valid move count: {valid_count}")
             print(f"policy network loss: {loss}")
+            print("Weights changed:", not torch.allclose(agent.previous_weight, agent.policy_network.dense1.weight, rtol=1e-05, atol=1e-08))
+            agent.previous_weight = agent.policy_network.dense1.weight.detach().clone()
             total_scores.append(board_env.total_score)
             best_tile_list.append(board_env.board.max())
+            loss_list.append(loss)
+            all_episode_action.append(action_list)
             if episode > 50:
                 average = sum(total_scores[-50:]) / 50
                 print(f"50 episode running average: {average}")
+
+            print("==================================================")
+            print("\n")
+
+            agent.epsilon_update()
             break
 
-    if episode%selected_config['target_update_interval'] == 0:
-        agent.update_target_network()
+    if average > best_scores:
+        best_scores = average
+        torch.save(agent.policy_network.state_dict(), os.path.join(selected_config["save_path"],'policy_best.pth'))
+        torch.save(agent.target_network.state_dict(), os.path.join(selected_config["save_path"],'target_best.pth'))
+
+
+print(f"Training complete in {time.time()-start_time}")
+
+data = {
+    'episode_score': total_scores,
+    'best_tile_score': best_tile_list,
+    'loss' : loss_list
+}
+
+df = pd.DataFrame(data)
+df.to_csv(os.path.join(selected_config["save_path"],'train_log.csv'), index=False)  # index=False to not save row numbers
+
+torch.save(agent.policy_network.state_dict(), os.path.join(selected_config["save_path"],'policy_last.pth'))
+torch.save(agent.target_network.state_dict(), os.path.join(selected_config["save_path"],'target_last.pth'))
+
+action_data = {str(idx): value for idx, value in enumerate(all_episode_action)}
+with open(os.path.join(selected_config["save_path"],'train_action_log.json'), 'w') as f:
+    json.dump(action_data, f, indent=4)
+
+
+    
         

@@ -22,13 +22,13 @@ class ConvBlock(nn.Module):
         return torch.cat((output1, output2, output3, output4), dim=1)
 
 class DQN_network(nn.Module):
-    def __init__(self):
+    def __init__(self,hidden_dim:int = 512):
         super(DQN_network, self).__init__()
-        self.conv1 = ConvBlock(16, 2048)
-        self.conv2 = ConvBlock(2048, 2048)
-        self.conv3 = ConvBlock(2048, 2048)
-        self.dense1 = nn.Linear(2048 * 16, 1024)
-        self.dense6 = nn.Linear(1024, 4)
+        self.conv1 = ConvBlock(16, hidden_dim)
+        self.conv2 = ConvBlock(hidden_dim, hidden_dim)
+        self.conv3 = ConvBlock(hidden_dim, hidden_dim)
+        self.dense1 = nn.Linear(hidden_dim * 16, int(hidden_dim/2))
+        self.dense6 = nn.Linear(int(hidden_dim/2), 4)
     
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -49,11 +49,12 @@ class DQN(BaseAlgorithm):
             tau:float,
             batch_size:int,
             buffer_size:int,
+            hidden_dim:int,
             device:str = 'cuda',
     ) -> None:
 
-        policy_network = DQN_network().to(device=device)
-        target_network = DQN_network().to(device=device)
+        policy_network = DQN_network(hidden_dim=hidden_dim).to(device=device)
+        target_network = DQN_network(hidden_dim=hidden_dim).to(device=device)
         
         self.device = device
         self.discount_factor = discount_factor
@@ -70,6 +71,8 @@ class DQN(BaseAlgorithm):
             buffer_size = buffer_size,
             device=device
         )
+
+        self.previous_weight = torch.zeros_like(self.policy_network.dense1.weight)
     
     def calculate_loss(self, batch):
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
@@ -103,4 +106,8 @@ class DQN(BaseAlgorithm):
         batch = self.get_batch_dataset()
         loss = self.calculate_loss(batch=batch) 
         self.update_policy_network(loss)
+
+        # print("Weights changed:", not torch.allclose(self.previous_weight, self.policy_network.dense1.weight, rtol=1e-05, atol=1e-08))
+        # self.previous_weight = self.policy_network.dense1.weight.detach().clone()
+
         return loss.item()

@@ -56,9 +56,12 @@ class BaseAlgorithm():
         board_flat = board_flat.reshape(1, 4, 4, 16).permute(0, 3, 1, 2).to(device=self.device)
         return board_flat
     
-    def select_action(self,encode_state:torch.Tensor) -> torch.Tensor :
-        sample = random.random()
-        self.epsilon = max(self.final_epsilon, self.epsilon*self.epsilon_decay)
+    def select_action(self,encode_state:torch.Tensor,play_mode:bool = False) -> torch.Tensor :
+        if play_mode: 
+            sample = 1.0
+        else:
+            sample = random.random()
+
         if sample > self.epsilon:
             with torch.no_grad():
                 return self.policy_network(encode_state).max(1)[1].view(1, 1)
@@ -87,5 +90,8 @@ class BaseAlgorithm():
 
     def same_move(self, state, next_state, last_memory):
         return torch.eq(state, last_memory.state).all() and torch.eq(next_state, last_memory.next_state).all()
+    
+    def epsilon_update(self):
+        self.epsilon = max(self.final_epsilon, self.epsilon*self.epsilon_decay)
 
 
