@@ -2,7 +2,7 @@ DQN :
   experiment_1:
     save_path : output\DQN_policy_exp1
     n_episodes : 1000
-    hidden_dim : 2048
+    hidden_dim : 1024
     target_update_interval : 20
     initial_epsilon : 1.0
     epsilon_decay : 0.995
@@ -15,38 +15,38 @@ DQN :
 
   experiment_2:
     save_path : output\DQN_policy_exp2
-    n_episodes : 500
-    hidden_dim : 512
+    n_episodes : 1000
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.996
+    final_epsilon : 0.05
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+
+  experiment_3:
+    save_path : output\DQN_policy_exp3
+    n_episodes : 2000
+    hidden_dim : 1024
     target_update_interval : 20
     initial_epsilon : 1.0
-    epsilon_decay : 0.992
+    epsilon_decay : 0.998
     final_epsilon : 0.05
     learning_rate : 0.0005
     discount_factor :  0.99
     tau : 0.95
-    batch_size : 32
-    buffer_size : 100
-
-  experiment_3:
-    save_path : output\DQN_policy_exp3
-    n_episodes : 20000
-    hidden_dim : 1024
-    target_update_interval : 50
-    initial_epsilon : 0.9
-    epsilon_decay : 0.9999
-    final_epsilon : 0.01
-    learning_rate :  0.00005
-    discount_factor :  0.99
-    tau : 0.95
     batch_size : 64
-    buffer_size : 10000
+    buffer_size : 50000
   
   play_1:
     save_path : output\DQN_policy_exp1
     n_episodes : 100
     hidden_dim : 1024
-    policy_network_weight : output\DQN_policy_exp3\policy_best.pth
-    target_network_weight : output\DQN_policy_exp3\target_best.pth
+    policy_network_weight : output\DQN_policy_exp1\policy_best.pth
+    target_network_weight : output\DQN_policy_exp1\target_best.pth
     target_update_interval : 1
     initial_epsilon : 1.0
     epsilon_decay : 0.998

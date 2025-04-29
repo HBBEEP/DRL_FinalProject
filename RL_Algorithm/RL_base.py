@@ -82,15 +82,15 @@ class BaseAlgorithm():
         self.policy_optimizer.step() 
 
     def update_target_network(self):
-        policy_net_weight = self.policy_network.state_dict()
-        target_net_weight = self.target_network.state_dict()
+        # policy_net_weight = self.policy_network.state_dict()
+        # target_net_weight = self.target_network.state_dict()
 
-        for key in policy_net_weight:
-            target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
+        # for key in policy_net_weight:
+        #     target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
 
-        self.target_network.load_state_dict(target_net_weight)
+        # self.target_network.load_state_dict(target_net_weight)
 
-        # self.target_network.load_state_dict(self.policy_network.state_dict())
+        self.target_network.load_state_dict(self.policy_network.state_dict())
         self.policy_network.train()
 
 
