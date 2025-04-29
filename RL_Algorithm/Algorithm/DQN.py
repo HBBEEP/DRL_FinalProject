@@ -4,10 +4,12 @@ import torch
 import torch.nn.functional as F
 from RL_Algorithm.RL_base import BaseAlgorithm
 
+
 # Define the neural network
 class ConvBlock(nn.Module):
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim, device):
         super(ConvBlock, self).__init__()
+        self.device = device
         d = output_dim // 4
         self.conv1 = nn.Conv2d(input_dim, d, 1, padding='same')
         self.conv2 = nn.Conv2d(input_dim, d, 2, padding='same')
@@ -15,6 +17,7 @@ class ConvBlock(nn.Module):
         self.conv4 = nn.Conv2d(input_dim, d, 4, padding='same')
 
     def forward(self, x):
+        x = x.to(self.device)
         output1 = self.conv1(x)
         output2 = self.conv2(x)
         output3 = self.conv3(x)
@@ -22,15 +25,17 @@ class ConvBlock(nn.Module):
         return torch.cat((output1, output2, output3, output4), dim=1)
 
 class DQN_network(nn.Module):
-    def __init__(self,hidden_dim:int = 512):
+    def __init__(self, device:str, hidden_dim:int = 512):
+        self.device = device
         super(DQN_network, self).__init__()
-        self.conv1 = ConvBlock(16, hidden_dim)
-        self.conv2 = ConvBlock(hidden_dim, hidden_dim)
-        self.conv3 = ConvBlock(hidden_dim, hidden_dim)
-        self.dense1 = nn.Linear(hidden_dim * 16, int(hidden_dim/2))
-        self.dense6 = nn.Linear(int(hidden_dim/2), 4)
+        self.conv1 = ConvBlock(16, hidden_dim,self.device)
+        self.conv2 = ConvBlock(hidden_dim, hidden_dim,self.device)
+        self.conv3 = ConvBlock(hidden_dim, hidden_dim,self.device)
+        self.dense1 = nn.Linear(hidden_dim * 16, hidden_dim//2)
+        self.dense6 = nn.Linear(hidden_dim//2, 4)
     
     def forward(self, x):
+        x = x.to(self.device)
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
@@ -50,13 +55,19 @@ class DQN(BaseAlgorithm):
             batch_size:int,
             buffer_size:int,
             hidden_dim:int,
+            soft_update:bool,
             device:str = 'cuda',
     ) -> None:
-
-        policy_network = DQN_network(hidden_dim=hidden_dim).to(device=device)
-        target_network = DQN_network(hidden_dim=hidden_dim).to(device=device)
-        
         self.device = device
+        policy_network = DQN_network(hidden_dim=hidden_dim,device=self.device).to(device=self.device)
+        target_network = DQN_network(hidden_dim=hidden_dim,device=self.device).to(device=self.device)
+        # print("here")
+        # print(self.device)
+        # print(policy_network.device)
+        policy_network.train()
+        target_network.eval()
+        
+        
         self.discount_factor = discount_factor
 
         super().__init__(
@@ -69,6 +80,7 @@ class DQN(BaseAlgorithm):
             tau = tau,
             batch_size = batch_size,
             buffer_size = buffer_size,
+            soft_update = soft_update,
             device=device
         )
 

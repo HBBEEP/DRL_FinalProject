@@ -24,15 +24,16 @@ class BaseAlgorithm():
     def __init__(
         self,
         device:str,
-        policy_network:torch.nn.Module,
-        target_network:torch.nn.Module,
+        policy_network,
+        target_network,
         initial_epsilon:float,
         epsilon_decay:float,
         final_epsilon:float,
         learning_rate:float,
         tau:float,
         batch_size:int,
-        buffer_size:int
+        buffer_size:int,
+        soft_update:bool
     ):
         self.policy_network = policy_network
         self.target_network= target_network
@@ -44,6 +45,7 @@ class BaseAlgorithm():
         self.batch_size = batch_size
         self.buffer_size = buffer_size
         self.device = device
+        self.soft_update = soft_update
 
         self.policy_optimizer = torch.optim.Adam(self.policy_network.parameters(), lr=learning_rate)
 
@@ -53,10 +55,12 @@ class BaseAlgorithm():
         board_flat = [0 if e == 0 else int(math.log(e, 2)) for e in current_board.flatten()]
         board_flat = torch.LongTensor(board_flat)
         board_flat = torch.nn.functional.one_hot(board_flat, num_classes=16).float().flatten()
-        board_flat = board_flat.reshape(1, 4, 4, 16).permute(0, 3, 1, 2).to(device=self.device)
+        board_flat = board_flat.reshape(1, 4, 4, 16).permute(0, 3, 1, 2) #.to(device=self.device)
         return board_flat
     
     def select_action(self,encode_state:torch.Tensor,play_mode:bool = False) -> torch.Tensor :
+        # print(encode_state.device)
+        # print(self.policy_network.device)
         if play_mode: 
             sample = 1.0
         else:
@@ -82,16 +86,18 @@ class BaseAlgorithm():
         self.policy_optimizer.step() 
 
     def update_target_network(self):
-        # policy_net_weight = self.policy_network.state_dict()
-        # target_net_weight = self.target_network.state_dict()
+        if self.soft_update:
+            policy_net_weight = self.policy_network.state_dict()
+            target_net_weight = self.target_network.state_dict()
 
-        # for key in policy_net_weight:
-        #     target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
+            for key in policy_net_weight:
+                target_net_weight[key] = self.tau * policy_net_weight[key] + (1 - self.tau) * target_net_weight[key]
 
-        # self.target_network.load_state_dict(target_net_weight)
-
-        self.target_network.load_state_dict(self.policy_network.state_dict())
-        self.policy_network.train()
+            self.target_network.load_state_dict(target_net_weight)
+            self.policy_network.train()
+        else:
+            self.target_network.load_state_dict(self.policy_network.state_dict())
+            self.policy_network.train()
 
 
     def same_move(self, state, next_state, last_memory):

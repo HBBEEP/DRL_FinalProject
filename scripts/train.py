@@ -60,6 +60,7 @@ agent = DQN(initial_epsilon=selected_config['initial_epsilon'],
             batch_size=selected_config['batch_size'],
             buffer_size=selected_config['buffer_size'],
             hidden_dim=selected_config['hidden_dim'],
+            soft_update=selected_config['soft_update'],
             device=device)
 #///////////////////////////////////////////////////////////////
 
@@ -79,7 +80,7 @@ for episode in range(selected_config['n_episodes']):
     step_count = 0
     action_list = []
 
-    state = agent.encode_state(board_env.board)
+    state = agent.encode_state(board_env.board).float()
     non_valid_count, valid_count = 0, 0
     while not done:
         # agent stepping
@@ -97,7 +98,7 @@ for episode in range(selected_config['n_episodes']):
 
         # Observe new state
         if not done:
-            next_state = agent.encode_state(board_env.board)
+            next_state = agent.encode_state(board_env.board).float()
         else:
             next_state = None
         
@@ -108,7 +109,7 @@ for episode in range(selected_config['n_episodes']):
             valid_count += 1
         
         if next_state == None or len(agent.memory) == 0 or not agent.same_move(state, next_state, agent.memory.memory[-1]):
-            action = action.to(dtype=torch.long)
+            # action = action.to(dtype=torch.long)
             agent.memory.push(state, action , next_state, reward)
         
         # if len(agent.memory) >= agent.batch_size:
@@ -123,6 +124,7 @@ for episode in range(selected_config['n_episodes']):
         if done:
             for _ in range(100):
                 loss = agent.update() 
+                
             board_visualizer.done()
             print(f"=============== Episode : {episode} ======================")
             print(f"Epsilon : {agent.epsilon}")
@@ -144,11 +146,11 @@ for episode in range(selected_config['n_episodes']):
             print("==================================================")
             print("\n")
 
-            agent.epsilon_update()
-
-            if episode%selected_config['target_update_interval'] == 0:
-                agent.update_target_network()   
+            agent.epsilon_update()  
             break
+
+    if episode%selected_config['target_update_interval'] == 0:
+        agent.update_target_network() 
 
     if average > best_scores:
         best_scores = average
