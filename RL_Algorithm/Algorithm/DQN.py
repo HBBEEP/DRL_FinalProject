@@ -24,24 +24,44 @@ class ConvBlock(nn.Module):
         output4 = self.conv4(x)
         return torch.cat((output1, output2, output3, output4), dim=1)
 
+# class DQN_network(nn.Module):
+#     def __init__(self, device:str, hidden_dim:int = 512):
+#         self.device = device
+#         super(DQN_network, self).__init__()
+#         self.conv1 = ConvBlock(16, hidden_dim,self.device)
+#         self.conv2 = ConvBlock(hidden_dim, hidden_dim,self.device)
+#         self.conv3 = ConvBlock(hidden_dim, hidden_dim,self.device)
+#         self.dense1 = nn.Linear(hidden_dim * 16, hidden_dim//2)
+#         self.dense6 = nn.Linear(hidden_dim//2, 4)
+    
+#     def forward(self, x):
+#         x = x.to(self.device)
+#         x = F.relu(self.conv1(x))
+#         x = F.relu(self.conv2(x))
+#         x = F.relu(self.conv3(x))
+#         x = nn.Flatten()(x)
+#         x = F.dropout(self.dense1(x))
+#         return self.dense6(x)
+
 class DQN_network(nn.Module):
     def __init__(self, device:str, hidden_dim:int = 512):
         self.device = device
         super(DQN_network, self).__init__()
-        self.conv1 = ConvBlock(16, hidden_dim,self.device)
-        self.conv2 = ConvBlock(hidden_dim, hidden_dim,self.device)
-        self.conv3 = ConvBlock(hidden_dim, hidden_dim,self.device)
-        self.dense1 = nn.Linear(hidden_dim * 16, hidden_dim//2)
-        self.dense6 = nn.Linear(hidden_dim//2, 4)
+        self.conv1 = nn.Conv2d(16, 256, (2,2))
+        self.conv2 = nn.Conv2d(256, 512, (2,2))
+        self.dense1 = nn.Linear(2048,1024)
+        self.dense6 = nn.Linear(1024, 256)
+        self.dense7 = nn.Linear(256, 4)
     
     def forward(self, x):
         x = x.to(self.device)
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
-        x = F.relu(self.conv3(x))
-        x = nn.Flatten()(x)
-        x = F.dropout(self.dense1(x))
-        return self.dense6(x)
+        x = x.reshape(x.size(0), -1)
+        x = F.relu(self.dense1(x))
+        x = F.relu(self.dense6(x))
+        x = self.dense7(x)
+        return x
 
 class DQN(BaseAlgorithm):
     def __init__(
