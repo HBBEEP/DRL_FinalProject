@@ -104,7 +104,7 @@ for episode in range(selected_config['n_episodes']):
             pass
         
         if done :
-            reward -= 1
+            reward -= 0.5
         
         reward = torch.tensor([reward], dtype=torch.float ,device=agent.device)                  
         cumulative_reward += reward
@@ -117,7 +117,7 @@ for episode in range(selected_config['n_episodes']):
         
         if next_state != None and torch.eq(state, next_state).all():
             non_valid_count += 1
-            reward -= 0.5
+            reward -= 0.1
         else:
             valid_count += 1
         
