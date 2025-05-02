@@ -26,6 +26,7 @@ class DQNFamily(BaseAlgorithm):
             device:str = 'cuda',
     ) -> None:
         self.device = device
+        self.algorithm = algorithm
 
         if algorithm == "DQN":
             policy_network = DQN_network(hidden_dim=hidden_dim,device=self.device).to(device=self.device)
@@ -66,13 +67,21 @@ class DQNFamily(BaseAlgorithm):
         reward_batch = torch.cat(batch.reward)
 
         state_action_values = self.policy_network(state_batch).gather(1, action_batch)
-
         next_state_values = torch.zeros(self.batch_size, device=self.device)
-        next_state_values[non_final_mask] = self.target_network(non_final_next_states).max(1)[0].detach()
+
+        if self.algorithm == "DQN":
+            next_state_values[non_final_mask] = self.target_network(non_final_next_states).max(1)[0].detach()
+            
+        elif self.algorithm == "DoubleDQN":
+            best_actions = self.policy_network(non_final_next_states).argmax(1, keepdim=True)
+            next_q_values = self.target_network(non_final_next_states).gather(1, best_actions)
+            next_state_values[non_final_mask] = next_q_values.squeeze(1).detach()
+
         expected_state_action_values = (next_state_values * self.discount_factor) + reward_batch
 
         criterion = nn.MSELoss()
         loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
+
         return loss
         
     def update(

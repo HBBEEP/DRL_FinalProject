@@ -1,6 +1,6 @@
 DoubleDQN :
   experiment_1:
-    save_path : output\DoubleDQN_exp1
+    save_path : output/DoubleDQN_exp1
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -16,7 +16,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_2:
-    save_path : output\DoubleDQN_exp2
+    save_path : output/DoubleDQN_exp2
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -32,7 +32,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_3:
-    save_path : output\DoubleDQN_exp3
+    save_path : output/DoubleDQN_exp3
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -48,7 +48,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_4:
-    save_path : output\DoubleDQN_exp4
+    save_path : output/DoubleDQN_exp4
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -64,7 +64,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_5:
-    save_path : output\DoubleDQN_exp5
+    save_path : output/DoubleDQN_exp5
     reward_func : Normal
     n_episodes : 5000
     hidden_dim : 1024
@@ -80,7 +80,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_6:
-    save_path : output\DoubleDQN_exp6
+    save_path : output/DoubleDQN_exp6
     reward_func : Normal
     n_episodes : 5000
     hidden_dim : 1024
@@ -96,7 +96,7 @@ DoubleDQN :
     buffer_size : 50000
 
   experiment_7:
-    save_path : output\DoubleDQN_exp7
+    save_path : output/DoubleDQN_exp7
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
