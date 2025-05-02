@@ -12,6 +12,7 @@ class Board():
         self.fill_cell()
         self.game_over = False
         self.total_score = 0
+        self.tile_merge = 0
     
     def reset(self):
         self.__init__()
@@ -36,6 +37,7 @@ class Board():
                   if previous == col[i]:
                       new_col[j] = 2 * col[i]
                       self.total_score += new_col[j]
+                      self.tile_merge += 2
                       j += 1
                       previous = None
                   else:
@@ -48,6 +50,7 @@ class Board():
 
     def move(self, direction):
       # 0: left, 1: up, 2: right, 3: down
+      self.tile_merge = 0
       rotated_board = rot90(self.board, direction)
       cols = [rotated_board[i, :] for i in range(4)]
       new_board = array([self.move_left(col) for col in cols])
@@ -64,7 +67,6 @@ class Board():
             return False
       return True
 
-    
     def step(self, direction):
       new_board = self.move(direction)
       if not (new_board == self.board).all():
@@ -75,7 +77,6 @@ def main_loop(b:Board, direction):
     new_board = b.move(direction)
     moved = False
     if (new_board == b.board).all():
-        # move is invalid
         pass
     else:
         moved = True
