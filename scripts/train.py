@@ -7,7 +7,7 @@ from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
 from RL_Algorithm.Algorithm.DQN import DQN
 
-from scripts.board_visualizer import Board_Animator
+from board_visualizer import Board_Animator
 import yaml,json
 import argparse
 import pandas as pd
@@ -92,8 +92,8 @@ for episode in range(selected_config['n_episodes']):
         board_env.step(direction=action.item())
         done = board_env.is_game_over()
         
-        reward = (board_env.total_score - old_score)
-        reward = torch.tensor([reward], device=agent.device)                    # --> reward terms design ? 
+        reward = (board_env.total_score - old_score) / 80
+        reward = torch.tensor([reward], dtype=torch.float, device=agent.device)                    # --> reward terms design ? 
         cumulative_reward += reward
 
         # Observe new state
