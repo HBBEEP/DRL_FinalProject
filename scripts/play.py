@@ -6,7 +6,7 @@ import tqdm,torch
 from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
 from RL_Algorithm.Algorithm.DQN import DQN
-from scripts.board_visualizer import Board_Animator
+from utils.board_visualizer import Board_Animator
 
 import yaml,json
 import argparse

@@ -5,9 +5,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import tqdm,torch
 from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
-from RL_Algorithm.Algorithm.DQN import DQN
+from RL_Algorithm.DQN_Family import DQNFamily
+from utils.reward_func import normal_reward
 
-from scripts.board_visualizer import Board_Animator
+from utils.board_visualizer import Board_Animator
 import yaml,json
 import argparse
 import pandas as pd
@@ -51,17 +52,18 @@ if not os.path.exists(selected_config["save_path"]):
     os.makedirs(selected_config["save_path"])
 
 #//////////////// Algorithm selection ///////////////////////////
-agent = DQN(initial_epsilon=selected_config['initial_epsilon'],
-            epsilon_decay=selected_config['epsilon_decay'],
-            final_epsilon=selected_config['final_epsilon'],
-            learning_rate=selected_config['learning_rate'],
-            discount_factor=selected_config['discount_factor'],
-            tau=selected_config['tau'],
-            batch_size=selected_config['batch_size'],
-            buffer_size=selected_config['buffer_size'],
-            hidden_dim=selected_config['hidden_dim'],
-            soft_update=selected_config['soft_update'],
-            device=device)
+agent = DQNFamily(algorithm=args.algo,
+                initial_epsilon=selected_config['initial_epsilon'],
+                epsilon_decay=selected_config['epsilon_decay'],
+                final_epsilon=selected_config['final_epsilon'],
+                learning_rate=selected_config['learning_rate'],
+                discount_factor=selected_config['discount_factor'],
+                tau=selected_config['tau'],
+                batch_size=selected_config['batch_size'],
+                buffer_size=selected_config['buffer_size'],
+                hidden_dim=selected_config['hidden_dim'],
+                soft_update=selected_config['soft_update'],
+                device=device)
 #///////////////////////////////////////////////////////////////
 
 total_scores = []
@@ -94,10 +96,13 @@ for episode in range(selected_config['n_episodes']):
         board_env.step(direction=action.item())
         done = board_env.is_game_over()
         
-        move_reward = (board_env.total_score - old_score)/2048
-        tile_merge_reward = board_env.tile_merge/8
-        reward = tile_merge_reward + move_reward
-
+        if selected_config["reward_func"] == "Normal":
+            reward = normal_reward(board_total_score=board_env.total_score,
+                                old_score=old_score,
+                                tile_merge=board_env.tile_merge,)
+        else:
+            pass
+        
         if done :
             reward -= 1
         
@@ -151,8 +156,6 @@ for episode in range(selected_config['n_episodes']):
             print(f"average loss: {cumulative_loss/update_count}")
             print(f"cumulative reward: {cumulative_reward.item()}")
             print(f"training device: {agent.device}")
-            print("Weights changed:", not torch.allclose(agent.previous_weight, agent.policy_network.dense1.weight, rtol=1e-05, atol=1e-08))
-            agent.previous_weight = agent.policy_network.dense1.weight.detach().clone()
             total_scores.append(board_env.total_score)
             best_tile_list.append(board_env.board.max())
             loss_list.append(loss)
