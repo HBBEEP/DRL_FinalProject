@@ -69,7 +69,7 @@ class DQNFamily(BaseAlgorithm):
         state_action_values = self.policy_network(state_batch).gather(1, action_batch)
         next_state_values = torch.zeros(self.batch_size, device=self.device)
 
-        if self.algorithm == "DQN":
+        if self.algorithm == "DQN" or self.algorithm == "DuelingDQN":
             next_state_values[non_final_mask] = self.target_network(non_final_next_states).max(1)[0].detach()
             
         elif self.algorithm == "DoubleDQN":
