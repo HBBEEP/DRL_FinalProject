@@ -70,8 +70,8 @@ class Dueling_DQN(BaseAlgorithm):
     ) -> None:
 
         self.device = device
-        policy_network = Dueling_DQN_network(hidden_dim=hidden_dim,device=self.device).to(device=self.device)
-        target_network = Dueling_DQN_network(hidden_dim=hidden_dim,device=self.device).to(device=self.device)
+        policy_network = Dueling_DQN_network(input_dim=16, hidden_dim=hidden_dim, num_actions=4, device=self.device).to(device=self.device)
+        target_network = Dueling_DQN_network(input_dim=16, hidden_dim=hidden_dim, num_actions=4, device=self.device).to(device=self.device)
 
         policy_network.train()
         target_network.eval()
@@ -88,8 +88,12 @@ class Dueling_DQN(BaseAlgorithm):
             tau = tau,
             batch_size = batch_size,
             buffer_size = buffer_size,
+            soft_update = soft_update,
             device=device
         )
+
+        self.previous_weight = torch.zeros_like(self.policy_network.fc1_adv.weight)
+
     
     def calculate_loss(self, batch):
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
