@@ -1,4 +1,8 @@
+import os,sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from Game_2048.board import Board, main_loop
+
 
 # Sample Game (Manual) (Skip this cell if you dont want to try the game manually)
 game = Board()

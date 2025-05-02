@@ -1,32 +1,32 @@
 DQN : 
   experiment_1:
-    save_path : output\DQN_policy_exp1
-    n_episodes : 1000
+    save_path : output\DQN_policy_exp1_new_reward
+    n_episodes : 2000
     hidden_dim : 1024
     target_update_interval : 20
     initial_epsilon : 1.0
-    epsilon_decay : 0.995
+    epsilon_decay : 0.998
+    final_epsilon : 0.05
+    learning_rate : 0.0001
+    discount_factor :  0.99
+    soft_update : true
+    tau : 0.95
+    batch_size : 128
+    buffer_size : 50000
+
+  experiment_2:
+    save_path : output\DQN_policy_exp2
+    n_episodes : 2000
+    hidden_dim : 1024
+    target_update_interval : 20
+    initial_epsilon : 1.0
+    epsilon_decay : 0.998
     final_epsilon : 0.05
     learning_rate : 0.00005
     discount_factor :  0.99
     soft_update : true
     tau : 0.95
-    batch_size : 64
-    buffer_size : 50000
-
-  experiment_2:
-    save_path : output\DQN_policy_exp2
-    n_episodes : 1000
-    hidden_dim : 2048
-    target_update_interval : 20
-    initial_epsilon : 0.9
-    epsilon_decay : 0.996
-    final_epsilon : 0.01
-    learning_rate : 0.0005
-    discount_factor :  0.99
-    soft_update : false
-    tau : 0.95
-    batch_size : 64
+    batch_size : 128
     buffer_size : 50000
 
   experiment_3:
@@ -42,6 +42,66 @@ DQN :
     soft_update : true
     tau : 0.95
     batch_size : 64
+    buffer_size : 50000
+
+  experiment_4:  # STEP UPDATE
+    save_path : output\DQN_policy_exp4
+    n_episodes : 2000
+    hidden_dim : 1024
+    target_update_interval : 50
+    initial_epsilon : 1.0
+    epsilon_decay : 0.998
+    final_epsilon : 0.05
+    learning_rate : 0.0001
+    discount_factor :  0.99
+    soft_update : true
+    tau : 0.95
+    batch_size : 128
+    buffer_size : 50000
+
+  experiment_5:
+    save_path : output\DQN_policy_exp5
+    n_episodes : 5000
+    hidden_dim : 1024
+    target_update_interval : 20
+    initial_epsilon : 1.0
+    epsilon_decay : 0.999
+    final_epsilon : 0.05
+    learning_rate : 0.0001
+    discount_factor :  0.99
+    soft_update : true
+    tau : 0.95
+    batch_size : 128
+    buffer_size : 50000
+
+  experiment_6:
+    save_path : output\DQN_policy_exp6
+    n_episodes : 5000
+    hidden_dim : 1024
+    target_update_interval : 20
+    initial_epsilon : 1.0
+    epsilon_decay : 0.999
+    final_epsilon : 0.05
+    learning_rate : 0.0001
+    discount_factor :  0.99
+    soft_update : true
+    tau : 0.95
+    batch_size : 128
+    buffer_size : 50000
+
+  experiment_7:
+    save_path : output\DQN_policy_exp7
+    n_episodes : 10000
+    hidden_dim : 1024
+    target_update_interval : 20
+    initial_epsilon : 1.0
+    epsilon_decay : 0.9995
+    final_epsilon : 0.05
+    learning_rate : 0.0001
+    discount_factor :  0.99
+    soft_update : false
+    tau : 0.95
+    batch_size : 128
     buffer_size : 50000
   
   play_1:

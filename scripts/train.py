@@ -77,6 +77,8 @@ for episode in range(selected_config['n_episodes']):
     board_env.reset()
     done = False
     cumulative_reward = 0
+    cumulative_loss = 0
+    update_count = 0
     step_count = 0
     action_list = []
 
@@ -92,8 +94,14 @@ for episode in range(selected_config['n_episodes']):
         board_env.step(direction=action.item())
         done = board_env.is_game_over()
         
-        reward = (board_env.total_score - old_score)
-        reward = torch.tensor([reward], device=agent.device)                    # --> reward terms design ? 
+        move_reward = (board_env.total_score - old_score)/2048
+        tile_merge_reward = board_env.tile_merge/8
+        reward = tile_merge_reward + move_reward
+
+        if done :
+            reward -= 1
+        
+        reward = torch.tensor([reward], dtype=torch.float ,device=agent.device)                  
         cumulative_reward += reward
 
         # Observe new state
@@ -104,16 +112,22 @@ for episode in range(selected_config['n_episodes']):
         
         if next_state != None and torch.eq(state, next_state).all():
             non_valid_count += 1
-            reward -= 10
+            reward -= 0.5
         else:
             valid_count += 1
         
         if next_state == None or len(agent.memory) == 0 or not agent.same_move(state, next_state, agent.memory.memory[-1]):
-            # action = action.to(dtype=torch.long)
             agent.memory.push(state, action , next_state, reward)
-        
+
+        ## =========== step training ============= ##
         # if len(agent.memory) >= agent.batch_size:
-        #     loss = agent.update()    
+        #     loss = agent.update()
+        #     update_count += 1
+        #     if loss is not None:
+        #         cumulative_loss += loss
+        
+        # if step_count%selected_config['target_update_interval'] == 0:
+        #     agent.update_target_network() 
 
         step_count += 1
         state = next_state
@@ -123,7 +137,10 @@ for episode in range(selected_config['n_episodes']):
 
         if done:
             for _ in range(100):
-                loss = agent.update() 
+                loss = agent.update()
+                update_count += 1
+                if loss is not None:
+                    cumulative_loss += loss
                 
             board_visualizer.done()
             print(f"=============== Episode : {episode} ======================")
@@ -131,7 +148,8 @@ for episode in range(selected_config['n_episodes']):
             print(f"Episode Score: {board_env.total_score}")
             print(f"Non valid move count: {non_valid_count}")
             print(f"Valid move count: {valid_count}")
-            print(f"policy network loss: {loss}")
+            print(f"average loss: {cumulative_loss/update_count}")
+            print(f"cumulative reward: {cumulative_reward.item()}")
             print(f"training device: {agent.device}")
             print("Weights changed:", not torch.allclose(agent.previous_weight, agent.policy_network.dense1.weight, rtol=1e-05, atol=1e-08))
             agent.previous_weight = agent.policy_network.dense1.weight.detach().clone()
