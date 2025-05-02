@@ -1,6 +1,6 @@
 DQN : 
   experiment_1:
-    save_path : output\DQN_policy_exp1_new_reward
+    save_path : output/DQN_policy_exp1_new_reward
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -16,7 +16,7 @@ DQN :
     buffer_size : 50000
 
   experiment_2:
-    save_path : output\DQN_policy_exp2
+    save_path : output/DQN_policy_exp2
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -32,7 +32,7 @@ DQN :
     buffer_size : 50000
 
   experiment_3:
-    save_path : output\DQN_policy_exp3
+    save_path : output/DQN_policy_exp3
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -48,7 +48,7 @@ DQN :
     buffer_size : 50000
 
   experiment_4:  # STEP UPDATE
-    save_path : output\DQN_policy_exp4
+    save_path : output/DQN_policy_exp4
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -64,7 +64,7 @@ DQN :
     buffer_size : 50000
 
   experiment_5:
-    save_path : output\DQN_policy_exp5
+    save_path : output/DQN_policy_exp5
     reward_func : Normal
     n_episodes : 5000
     hidden_dim : 1024
@@ -80,7 +80,7 @@ DQN :
     buffer_size : 50000
 
   experiment_6:
-    save_path : output\DQN_policy_exp6
+    save_path : output/DQN_policy_exp6
     reward_func : Normal
     n_episodes : 5000
     hidden_dim : 1024
@@ -96,7 +96,7 @@ DQN :
     buffer_size : 50000
 
   experiment_7:
-    save_path : output\DQN_policy_exp7
+    save_path : output/DQN_policy_exp7
     reward_func : Normal
     n_episodes : 2000
     hidden_dim : 1024
@@ -112,7 +112,7 @@ DQN :
     buffer_size : 50000
   
   play_1:
-    save_path : output\DQN_policy_exp1
+    save_path : output/DQN_policy_exp1
     n_episodes : 100
     hidden_dim : 1024
     policy_network_weight : output\DQN_policy_exp1\policy_best.pth
