@@ -23,6 +23,7 @@ class DQNFamily(BaseAlgorithm):
             buffer_size:int,
             hidden_dim:int,
             soft_update:bool,
+            use_scheduler:bool,
             device:str = 'cuda',
     ) -> None:
         self.device = device
@@ -45,7 +46,7 @@ class DQNFamily(BaseAlgorithm):
 
         super().__init__(
             policy_network = policy_network,
-            target_network= target_network,
+            target_network = target_network,
             initial_epsilon = initial_epsilon,
             epsilon_decay = epsilon_decay,
             final_epsilon = final_epsilon,
@@ -54,7 +55,8 @@ class DQNFamily(BaseAlgorithm):
             batch_size = batch_size,
             buffer_size = buffer_size,
             soft_update = soft_update,
-            device=device
+            use_scheduler = use_scheduler,
+            device = device,
         )
     
     def calculate_loss(self, batch):

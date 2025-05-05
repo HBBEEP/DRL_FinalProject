@@ -63,6 +63,7 @@ agent = DQNFamily(algorithm=args.algo,
                 buffer_size=selected_config['buffer_size'],
                 hidden_dim=selected_config['hidden_dim'],
                 soft_update=selected_config['soft_update'],
+                use_scheduler=selected_config['use_scheduler'],
                 device=device)
 #///////////////////////////////////////////////////////////////
 
@@ -82,6 +83,7 @@ for episode in range(selected_config['n_episodes']):
     cumulative_loss = 0
     update_count = 0
     step_count = 0
+    duplicate = False
     action_list = []
 
     state = agent.encode_state(board_env.board).float()
@@ -146,18 +148,20 @@ for episode in range(selected_config['n_episodes']):
             update_count = 0
             for _ in range(100):
                 loss = agent.update()
-                cumulative_loss += loss.item()
                 update_count += 1
+                if loss != None:
+                    cumulative_loss += loss
 
             board_visualizer.done()
             print(f"=============== Episode : {episode} ======================")
             print(f"Epsilon : {agent.epsilon}")
-            print(f"Episode Score: {board_env.total_score}")
+            print(f"Learning rate : {agent.policy_optimizer.param_groups[0]['lr']}")
+            print(f"Episode score: {board_env.total_score}")
             print(f"Non valid move count: {non_valid_count}")
             print(f"Valid move count: {valid_count}")
-            print(f"average loss: {cumulative_loss/update_count}")
-            print(f"cumulative reward: {cumulative_reward.item()}")
-            print(f"training device: {agent.device}")
+            print(f"Average loss: {cumulative_loss/update_count}")
+            print(f"Cumulative reward: {cumulative_reward}")
+            print(f"Training device: {agent.device}")
             total_scores.append(board_env.total_score)
             best_tile_list.append(board_env.board.max())
             loss_list.append(loss)
@@ -166,8 +170,23 @@ for episode in range(selected_config['n_episodes']):
                 average = sum(total_scores[-50:]) / 50
                 print(f"50 episode running average: {average}")
 
+                data = {
+                    'episode_score': total_scores,
+                    'best_tile_score': best_tile_list,
+                    'loss' : loss_list
+                }
+
+                df = pd.DataFrame(data)
+                df.to_csv(os.path.join(selected_config["save_path"],'train_log.csv'), index=False)  # index=False to not save row numbers
+
+                action_data = {str(idx): value for idx, value in enumerate(all_episode_action)}
+                with open(os.path.join(selected_config["save_path"],'train_action_log.json'), 'w') as f:
+                    json.dump(action_data, f, indent=4)
+
             print("==================================================")
             print("\n")
+
+            agent.epsilon_update()
 
     # Update the target network, copying all weights and biases in DQN
     if episode % selected_config["target_update_interval"] == 0:
@@ -181,21 +200,10 @@ for episode in range(selected_config['n_episodes']):
 
 print(f"Training complete in {time.time()-start_time}")
 
-data = {
-    'episode_score': total_scores,
-    'best_tile_score': best_tile_list,
-    'loss' : loss_list
-}
-
-df = pd.DataFrame(data)
-df.to_csv(os.path.join(selected_config["save_path"],'train_log.csv'), index=False)  # index=False to not save row numbers
-
 torch.save(agent.policy_network.state_dict(), os.path.join(selected_config["save_path"],'policy_last.pth'))
 torch.save(agent.target_network.state_dict(), os.path.join(selected_config["save_path"],'target_last.pth'))
 
-action_data = {str(idx): value for idx, value in enumerate(all_episode_action)}
-with open(os.path.join(selected_config["save_path"],'train_action_log.json'), 'w') as f:
-    json.dump(action_data, f, indent=4)
+
 
 
     
