@@ -55,7 +55,8 @@ class BaseAlgorithm():
 
         self.memory = ReplayMemory(capacity=self.buffer_size) 
 
-        self.step_done = 0         
+        self.step_done = 0
+        self.global_step_done = 0      
 
     def encode_state(self,current_board:np.ndarray) -> torch.Tensor:
         board_flat = [0 if e == 0 else int(math.log(e, 2)) for e in current_board.flatten()]
@@ -66,6 +67,7 @@ class BaseAlgorithm():
     
     def select_action(self,encode_state:torch.Tensor,play_mode:bool = False) -> torch.Tensor :
         self.step_done += 1
+        self.global_step_done += 1
         if play_mode: 
             sample = 1.0
         else:
@@ -91,8 +93,9 @@ class BaseAlgorithm():
         self.policy_optimizer.step()
 
         if self.use_scheduler:
-            if self.step_done % 5000 == 0 and self.step_done < 1000000:
-              self.scheduler.step()
+            if self.step_done >= 200 and self.global_step_done < 1000000:
+                self.step_done = 0
+                self.scheduler.step()
 
     def update_target_network(self):
         if self.soft_update:
