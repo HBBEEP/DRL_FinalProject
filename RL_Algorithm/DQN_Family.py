@@ -67,6 +67,7 @@ class DQNFamily(BaseAlgorithm):
         reward_batch = torch.cat(batch.reward)
 
         state_action_values = self.policy_network(state_batch).gather(1, action_batch)
+        
         next_state_values = torch.zeros(self.batch_size, device=self.device)
 
         if self.algorithm == "DQN" or self.algorithm == "DuelingDQN":

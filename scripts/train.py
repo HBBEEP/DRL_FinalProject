@@ -6,7 +6,7 @@ import tqdm,torch
 from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
 from RL_Algorithm.DQN_Family import DQNFamily
-from utils.reward_func import normal_reward
+from utils.reward_func import full_score_reward, merge_count_reward
 
 from utils.board_visualizer import Board_Animator
 import yaml,json
@@ -96,18 +96,17 @@ for episode in range(selected_config['n_episodes']):
         board_env.step(direction=action.item())
         done = board_env.is_game_over()
         
-        if selected_config["reward_func"] == "Normal":
-            reward = normal_reward(board_total_score=board_env.total_score,
-                                old_score=old_score,
-                                tile_merge=board_env.tile_merge,)
-        else:
-            pass
+        if selected_config["reward_func"] == "Full_score":
+            reward = full_score_reward(board_total_score=board_env.total_score,
+                                       old_score=old_score,
+                                       device=device)
+        elif selected_config["reward_func"] == "Merge_score":
+            reward = merge_count_reward(board_total_score=board_env.total_score,
+                                        old_score=old_score,
+                                        tile_merge=board_env.tile_merge,
+                                        device=device)
         
-        if done :
-            reward -= 0.5
-        
-        reward = torch.tensor([reward], dtype=torch.float ,device=agent.device)                  
-        cumulative_reward += reward
+        cumulative_reward += reward.item()
 
         # Observe new state
         if not done:
@@ -117,22 +116,24 @@ for episode in range(selected_config['n_episodes']):
         
         if next_state != None and torch.eq(state, next_state).all():
             non_valid_count += 1
-            reward -= 0.1
+            if selected_config["reward_func"] == "Full_score":
+                reward -= 10
+            elif selected_config["reward_func"] == "Merge_score":
+                reward -= 0.01
         else:
             valid_count += 1
         
-        if next_state == None or len(agent.memory) == 0 or not agent.same_move(state, next_state, agent.memory.memory[-1]):
-            agent.memory.push(state, action , next_state, reward)
+        # Store the transition in memory
+        if next_state != None and duplicate and not torch.eq(state, next_state).all():
+            duplicate = False
 
-        ## =========== step training ============= ##
-        # if len(agent.memory) >= agent.batch_size:
-        #     loss = agent.update()
-        #     update_count += 1
-        #     if loss is not None:
-        #         cumulative_loss += loss
+        if not duplicate:
+            if next_state == None or len(agent.memory) == 0 or not agent.same_move(state, next_state, agent.memory.memory[-1]):
+                cumulative_reward += reward.item()
+                agent.memory.push(state, action, next_state, reward)
         
-        # if step_count%selected_config['target_update_interval'] == 0:
-        #     agent.update_target_network() 
+        if next_state != None:
+            duplicate = torch.eq(state, next_state).all()
 
         step_count += 1
         state = next_state
@@ -141,12 +142,13 @@ for episode in range(selected_config['n_episodes']):
             board_visualizer.update(board_env.board,board_env.total_score,delay=0.0)
 
         if done:
+            cumulative_loss = 0
+            update_count = 0
             for _ in range(100):
                 loss = agent.update()
+                cumulative_loss += loss.item()
                 update_count += 1
-                if loss is not None:
-                    cumulative_loss += loss
-                
+
             board_visualizer.done()
             print(f"=============== Episode : {episode} ======================")
             print(f"Epsilon : {agent.epsilon}")
@@ -167,11 +169,9 @@ for episode in range(selected_config['n_episodes']):
             print("==================================================")
             print("\n")
 
-            agent.epsilon_update()  
-            break
-
-    if episode%selected_config['target_update_interval'] == 0:
-        agent.update_target_network() 
+    # Update the target network, copying all weights and biases in DQN
+    if episode % selected_config["target_update_interval"] == 0:
+        agent.update_target_network()
 
     if average > best_scores:
         best_scores = average
