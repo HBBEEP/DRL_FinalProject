@@ -65,11 +65,11 @@ class DQN(nn.Module):
 
     def __init__(self):
         super(DQN, self).__init__()
-        self.conv1 = ConvBlock(16, 2048)
-        self.conv2 = ConvBlock(2048, 2048)
-        self.conv3 = ConvBlock(2048, 2048)
-        self.dense1 = nn.Linear(2048 * 16, 1024)
-        self.dense6 = nn.Linear(1024, 4)
+        self.conv1 = ConvBlock(16, 1024)
+        self.conv2 = ConvBlock(1024, 1024)
+        self.conv3 = ConvBlock(1024, 1024)
+        self.dense1 = nn.Linear(1024 * 16, 512)
+        self.dense6 = nn.Linear(512, 4)
     
     def forward(self, x):
         x = x.to(device)
@@ -89,7 +89,7 @@ EPS_END = 0.01
 EPS_DECAY = 0.9999
 TARGET_UPDATE = 20
 LEARNING_RATE = 5e-5
-NUM_EPISODES = 50
+NUM_EPISODES = 20000
 BUFFER_SIZE = 50000
 
 n_actions = 4
@@ -150,7 +150,7 @@ def optimize_model():
 
     criterion = nn.MSELoss()
     loss = criterion(state_action_values, expected_state_action_values.unsqueeze(1))
-    print(f"loss : {loss.item()}")
+    # print(f"loss : {loss.item()}")
 
     optimizer.zero_grad()
     loss.backward()
@@ -159,6 +159,7 @@ def optimize_model():
     # if steps_done % 5000 == 0 and steps_done < 1000000:
     #   print("Learning rate changed.")
     #   scheduler.step()
+    return loss
 
 def same_move(state, next_state, last_memory):
   return torch.eq(state, last_memory.state).all() and torch.eq(next_state, last_memory.next_state).all()
@@ -166,6 +167,7 @@ def same_move(state, next_state, last_memory):
 def main():
     game = Board()
     total_scores, best_tile_list = [], []
+    
 
     for i_episode in range(NUM_EPISODES):
         print(f"Episode {i_episode}")
@@ -174,6 +176,7 @@ def main():
         state = encode_state(game.board).float()
         duplicate = False
         non_valid_count, valid_count = 0, 0
+        cumulative_reward = 0
         for t in count():
             # Select and perform an action
             action = select_action(state)
@@ -199,17 +202,19 @@ def main():
                 valid_count += 1
 
             # Store the transition in memory
-            # if next_state != None and duplicate and not torch.eq(state, next_state).all():
-            #   duplicate = False
+            if next_state != None and duplicate and not torch.eq(state, next_state).all():
+              duplicate = False
 
-            # if not duplicate:
-            if next_state == None or len(memory) == 0 or not same_move(state, next_state, memory.memory[-1]):
-                print(state)
-                print(state.shape)
-                memory.push(state, action, next_state, reward)
+
+            if not duplicate:
+                if next_state == None or len(memory) == 0 or not same_move(state, next_state, memory.memory[-1]):
+                    # print(state)
+                    # print(state.shape)
+                    cumulative_reward += reward.item()
+                    memory.push(state, action, next_state, reward)
             
-            # if next_state != None:
-            #   duplicate = torch.eq(state, next_state).all()
+            if next_state != None:
+              duplicate = torch.eq(state, next_state).all()
             
             # Move to the next state
             state = next_state
@@ -218,16 +223,22 @@ def main():
             # optimize_model()
             
             if done:
+                cumulative_loss = 0
+                update_count = 0
                 for _ in range(100):
-                    optimize_model()
+                    loss = optimize_model()
+                    cumulative_loss += loss.item()
+                    update_count += 1
 
                 print(game.board)
                 print(f"Episode Score: {game.total_score}")
                 print(f"Non valid move count: {non_valid_count}")
                 print(f"Valid move count: {valid_count}")
+                print(f"average_loss: {cumulative_loss/update_count}")
+                print(f"cumurative_reward : {cumulative_reward}")
                 dummy = encode_state(game.board)
-                print(dummy)
-                print(dummy.shape)
+                # print(dummy)
+                # print(dummy.shape)
                 total_scores.append(game.total_score)
                 best_tile_list.append(game.board.max())
                 if i_episode > 50:
