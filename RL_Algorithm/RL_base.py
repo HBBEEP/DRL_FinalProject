@@ -33,7 +33,8 @@ class BaseAlgorithm():
         tau:float,
         batch_size:int,
         buffer_size:int,
-        soft_update:bool
+        soft_update:bool,
+        use_scheduler:bool,
     ):
         self.policy_network = policy_network
         self.target_network= target_network
@@ -46,10 +47,15 @@ class BaseAlgorithm():
         self.buffer_size = buffer_size
         self.device = device
         self.soft_update = soft_update
+        self.use_scheduler = use_scheduler
 
         self.policy_optimizer = torch.optim.Adam(self.policy_network.parameters(), lr=learning_rate)
+        if self.use_scheduler:
+            self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.policy_optimizer, gamma=0.98)
 
-        self.memory = ReplayMemory(capacity=self.buffer_size)          
+        self.memory = ReplayMemory(capacity=self.buffer_size) 
+
+        self.step_done = 0         
 
     def encode_state(self,current_board:np.ndarray) -> torch.Tensor:
         board_flat = [0 if e == 0 else int(math.log(e, 2)) for e in current_board.flatten()]
@@ -59,8 +65,7 @@ class BaseAlgorithm():
         return board_flat
     
     def select_action(self,encode_state:torch.Tensor,play_mode:bool = False) -> torch.Tensor :
-        # print(encode_state.device)
-        # print(self.policy_network.device)
+        self.step_done += 1
         if play_mode: 
             sample = 1.0
         else:
@@ -83,7 +88,11 @@ class BaseAlgorithm():
     def update_policy_network(self,loss):
         self.policy_optimizer.zero_grad()
         loss.backward()
-        self.policy_optimizer.step() 
+        self.policy_optimizer.step()
+
+        if self.use_scheduler:
+            if self.step_done % 5000 == 0 and self.step_done < 1000000:
+              self.scheduler.step()
 
     def update_target_network(self):
         if self.soft_update:

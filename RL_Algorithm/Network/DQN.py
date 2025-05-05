@@ -42,15 +42,15 @@ class ConvBlock(nn.Module):
         output4 = self.conv4(x)
         return torch.cat((output1, output2, output3, output4), dim=1)
 
-class DQN(nn.Module):
+class DQN_network(nn.Module):
 
     def __init__(self, hidden_dim, device):
-        super(DQN, self).__init__()
+        super(DQN_network, self).__init__()
         self.hidden_dim = hidden_dim
         self.device = device
-        self.conv1 = ConvBlock(16, self.hidden_dim)
-        self.conv2 = ConvBlock(self.hidden_dim, self.hidden_dim)
-        self.conv3 = ConvBlock(self.hidden_dim, self.hidden_dim)
+        self.conv1 = ConvBlock(16, self.hidden_dim, device=self.device)
+        self.conv2 = ConvBlock(self.hidden_dim, self.hidden_dim, device=self.device)
+        self.conv3 = ConvBlock(self.hidden_dim, self.hidden_dim, device=self.device)
         self.dense1 = nn.Linear(self.hidden_dim * 16, self.hidden_dim//2)
         self.dense2 = nn.Linear(self.hidden_dim//2, 4)
     
