@@ -97,6 +97,7 @@ for episode in range(selected_config['n_episodes']):
 
         # env stepping
         board_env.step(direction=action.item())
+        new_board = board_env.board
         done = board_env.is_game_over()
         
         if selected_config["reward_func"] == "Full_score":
@@ -112,7 +113,7 @@ for episode in range(selected_config['n_episodes']):
             reward = guide_score_reward(board_total_score=board_env.total_score,
                                         old_score=old_score,
                                         old_board=old_board,
-                                        new_board=board_env.board,
+                                        new_board=new_board,
                                         device=device)
         
         cumulative_reward += reward.item()
