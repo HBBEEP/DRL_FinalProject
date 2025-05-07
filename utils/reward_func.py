@@ -20,7 +20,7 @@ def guide_score_reward(board_total_score, old_score, new_board, old_board, devic
     reward = (board_total_score - old_score)
     guide_score = (gradient_score_2048(new_board) - gradient_score_2048(old_board))
     reward = reward + reward*guide_score
-    reward = torch.tensor([reward], device=device)
+    reward = torch.tensor([reward], dtype=torch.float, device=device)
     return reward
 
 

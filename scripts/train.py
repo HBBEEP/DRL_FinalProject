@@ -6,7 +6,7 @@ import tqdm,torch
 from Game_2048.board import Board, main_loop
 from RL_Algorithm.RL_base import BaseAlgorithm
 from RL_Algorithm.DQN_Family import DQNFamily
-from utils.reward_func import full_score_reward, merge_count_reward
+from utils.reward_func import full_score_reward, merge_count_reward, guide_score_reward
 
 from utils.board_visualizer import Board_Animator
 import yaml,json
@@ -93,9 +93,11 @@ for episode in range(selected_config['n_episodes']):
         action = agent.select_action(state)
         action_list.append(action.item())
         old_score = board_env.total_score
+        old_board = board_env.board
 
         # env stepping
         board_env.step(direction=action.item())
+        new_board = board_env.board
         done = board_env.is_game_over()
         
         if selected_config["reward_func"] == "Full_score":
@@ -108,9 +110,10 @@ for episode in range(selected_config['n_episodes']):
                                         tile_merge=board_env.tile_merge,
                                         device=device)
         elif selected_config["reward_func"] == "Guide_score":
-            reward = merge_count_reward(board_total_score=board_env.total_score,
+            reward = guide_score_reward(board_total_score=board_env.total_score,
                                         old_score=old_score,
-                                        tile_merge=board_env.tile_merge,
+                                        old_board=old_board,
+                                        new_board=new_board,
                                         device=device)
         
         cumulative_reward += reward.item()
