@@ -107,6 +107,11 @@ for episode in range(selected_config['n_episodes']):
                                         old_score=old_score,
                                         tile_merge=board_env.tile_merge,
                                         device=device)
+        elif selected_config["reward_func"] == "Guide_score":
+            reward = merge_count_reward(board_total_score=board_env.total_score,
+                                        old_score=old_score,
+                                        tile_merge=board_env.tile_merge,
+                                        device=device)
         
         cumulative_reward += reward.item()
 
@@ -118,7 +123,7 @@ for episode in range(selected_config['n_episodes']):
         
         if next_state != None and torch.eq(state, next_state).all():
             non_valid_count += 1
-            if selected_config["reward_func"] == "Full_score":
+            if selected_config["reward_func"] == "Full_score" or selected_config["reward_func"] == "Guide_score":
                 reward -= 10
             elif selected_config["reward_func"] == "Merge_score":
                 reward -= 0.01
