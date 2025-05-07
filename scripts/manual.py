@@ -2,6 +2,7 @@ import os,sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from Game_2048.board import Board, main_loop
+from utils.reward_func import gradient_score_2048
 
 
 # Sample Game (Manual) (Skip this cell if you dont want to try the game manually)
@@ -16,7 +17,9 @@ while not finish:
   if not moved:
     print("Not a valid move! Nothing has changed.")
     continue
+
   print(game.board)
+  print(gradient_score_2048(game.board))
   print(game.total_score)
   finish = game.is_game_over()
 print("Game Over!, Total Score is {}".format(game.total_score))
