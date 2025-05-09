@@ -93,7 +93,7 @@ class BaseAlgorithm():
         self.policy_optimizer.step()
 
         if self.use_scheduler:
-            if self.step_done >= 200 and self.global_step_done < 1000000:
+            if self.step_done >= 5000 and self.global_step_done < 1000000:
                 self.step_done = 0
                 self.scheduler.step()
 
