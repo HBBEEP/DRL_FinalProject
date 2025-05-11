@@ -85,8 +85,9 @@ start_time = time.time()
 for episode in range(selected_config['n_episodes']):
     board_env.reset()
 
-    b.preset_board() if is_preset_board else pass: # use preset board
-
+    if is_preset_board:
+        board_env.preset_board() 
+        
     done = False
     cumulative_reward = 0
     cumulative_loss = 0
