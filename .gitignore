@@ -5,14 +5,5 @@
 /utils/__pycache__
 /RL_Algorithm/Network/__pycache__
 
-/weight/DQN/experiment_1
-/weight/DQN/experiment_2
-
-/weight/DoubleDQN/experiment_1
-/weight/DoubleDQN/experiment_2
-
-/weight/DuelingDQN/experiment_1
-/weight/DuelingDQN/experiment_2
-
 output
 
