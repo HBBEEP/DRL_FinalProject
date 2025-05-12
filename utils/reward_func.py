@@ -12,7 +12,7 @@ def merge_count_reward(board_total_score, old_score, tile_merge, goal=2048, tile
     tile_merge_reward = (tile_merge-1)/tile_divider
     reward = tile_merge_reward + move_reward
 
-    reward = torch.tensor([reward], device=device)
+    reward = torch.tensor([reward], dtype=torch.float, device=device)
     return reward
 
 
