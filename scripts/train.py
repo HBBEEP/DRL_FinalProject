@@ -48,11 +48,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 board_env = Board()
 board_visualizer = Board_Animator()
 
-# ////////Test Preset Board /////////////
-max_tile = 512
-is_preset_board = True
-board_env.set_max_tile(max_tile)
-# ////////Test Preset Board /////////////
+use_preset_board = selected_config['use_preset_board']
+max_preset_tile = selected_config['max_preset_tile']
+if (use_preset_board):
+    max_preset_tile = selected_config['max_preset_tile']
+    board_env.set_max_tile(max_preset_tile)
 
 if not os.path.exists(selected_config["save_path"]):
     os.makedirs(selected_config["save_path"])
@@ -85,7 +85,7 @@ start_time = time.time()
 for episode in range(selected_config['n_episodes']):
     board_env.reset()
 
-    if is_preset_board:
+    if use_preset_board:
         board_env.preset_board() 
         
     done = False
