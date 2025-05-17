@@ -16,6 +16,40 @@ DoubleDQN :
     batch_size : 64
     buffer_size : 50000
 
+  experiment_2:
+    save_path : output/DoubleDQN_policy_exp2
+    reward_func : Guide_score
+    n_episodes : 20000
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : true
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+
+  experiment_3:
+    save_path : output/DoubleDQN_policy_exp3
+    reward_func : Guide_score
+    n_episodes : 20000
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+
   play_1:
     n_episodes : 10
     policy_network_weight : network_weight
