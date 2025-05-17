@@ -132,7 +132,7 @@ DQN :
     batch_size : 64
     buffer_size : 50000
 
-  experiment_7:
+  experiment_8:
     save_path : output/DQN_policy_exp8_preset_1024
     reward_func : Full_score
     n_episodes : 10000
@@ -151,18 +151,41 @@ DQN :
     batch_size : 64
     buffer_size : 50000
 
-  play_1:
-    save_path : output/DQN_policy_exp1
-    n_episodes : 100
-    hidden_dim : 1024
-    policy_network_weight : output\DQN_policy_exp1\policy_best.pth
-    target_network_weight : output\DQN_policy_exp1\target_best.pth
-    target_update_interval : 1
-    initial_epsilon : 1.0
-    epsilon_decay : 0.998
-    final_epsilon : 0.05
-    learning_rate : 0.001
+  experiment_9:
+    save_path : output/DQN_policy_exp9_guide_no_sheduler
+    reward_func : Guide_score
+    n_episodes : 20000
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
     discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
     tau : 0.95
-    batch_size : 8
-    buffer_size : 100
+    batch_size : 64
+    buffer_size : 50000
+
+  play_1:
+    save_path : play_output/DQN_policy_exp4
+    n_episodes : 5
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp4\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp4\target_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
