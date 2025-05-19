@@ -1,95 +1,110 @@
-# DRL Final Project
+# Comparative DQN Approaches for 2048 Puzzle Game
+FRA 503: Deep Reinforcement Learning for Robotics
 
-## Available Command 
-```
-python scripts/DQN_train.py 
-```
+## Member
+1. Kullakant Kaewkallaya 64340500006
+2. Peerawat Santifuengkul 64340500043
+3. Monsicha Sopitlaptana 64340500071
+
+
+## Introduction
+
+2048 is a sliding tile puzzle game. The objective of the game is to slide numbered tiles on a grid to combine them and create a tile with the number 2048. This game is played on a plain 4×4 grid, with numbered tiles that slide when a player moves them using the four arrow keys. 
+
+## Technique
+
+### Literature review
+
+description description description
+
+### Game Environment 
+
+description description description
+
+### Algorithms
+
+#### 1. Vanilla DQN 
+
+description description description
+
+#### 2. Double DQN
+
+description description description
+
+#### 3. Dueling DQN 
+
+description description description
+
+
+## Experiment
+
+#### Parameters
+
+description description description
+
+#### Reward Functions
+
+description description description
+
+#### Scheduling
+
+description description description
+
+#### Time Skip
+
+description description description
+
+#### Performance Metrics
+
+description description description
+
+
+## Result & Analysis
+
+description description description
+
+#### 1. DQN 
+
+description description description
+
+#### 2. DQN
+
+description description description
+
+#### 3. DQN 
+
+description description description
+
+#### 4. Double DQN 
+
+description description description
+
+#### 5. Double DQN
+
+description description description
+
+#### 6. Dueling DQN 
+
+description description description
+
+#### 7. Dueling DQN 
+
+description description description
+
+#### 8. DQN
+
+description description description
+
+#### 9. DQN Skip
+
+description description description
+
+## Example Command
 
 ```
 python scripts/train.py --algo DQN --exp experiment_1 --debug False
 ```
 
-## Tree
-```
-.
-├── Game_2048
-│   ├── board.py
-│   └── __pycache__
-│       └── board.cpython-310.pyc
-├── params
-│   ├── DoubleDQN.yaml
-│   ├── DQN.yaml
-│   └── DuelingDQN.yaml
-├── readme.md
-├── result
-│   ├── DoubleDQN
-│   │   ├── experiment_1
-│   │   │   └── log_abc.csv
-│   │   └── experiment_2
-│   │       └── log_abc.csv
-│   ├── DQN
-│   │   ├── experiment_1
-│   │   │   └── log_abc.csv
-│   │   └── experiment_2
-│   │       └── log_abc.csv
-│   └── DuelingDQN
-│       ├── experiment_1
-│       │   └── log_abc.csv
-│       └── experiment_2
-│           └── log_abc.csv
-├── RL_Algorithm
-│   ├── Algorithm
-│   │   ├── DoubleDQN.py
-│   │   ├── DQN.py
-│   │   ├── DuelingDQN.py
-│   │   └── __pycache__
-│   │       └── DeepQLearning.cpython-310.pyc
-│   └── RL_base.py
-├── scripts
-│   ├── DQN_train.py
-│   ├── manual.py
-│   ├── play.py
-│   ├── __pycache__
-│   │   ├── manual.cpython-310.pyc
-│   │   └── random_action.cpython-310.pyc
-│   ├── random_action.py
-│   └── train.py
-└── weight
-    ├── DoubleDQN
-    │   ├── experiment_1
-    │   │   ├── policy_net.pth
-    │   │   └── target_net.pth
-    │   └── experiment_2
-    │       ├── policy_net.pth
-    │       └── target_net.pth
-    ├── DQN
-    │   ├── experiment_1
-    │   │   ├── policy_net.pth
-    │   │   └── target_net.pth
-    │   └── experiment_2
-    │       ├── policy_net.pth
-    │       └── target_net.pth
-    └── DuelingDQN
-        ├── experiment_1
-        │   ├── policy_net.pth
-        │   └── target_net.pth
-        └── experiment_2
-            ├── policy_net.pth
-            └── target_net.pth
-```
+## Reference
 
-### Ideal Commands
-
-#### Train
-```
-python scripts/train.py --algo DQN --exp exp1 --debug False
-```
-
-#### Test 
-```
-python scripts/train.py --algo DQN --exp exp1 --debug True
-```
-
-
-## reference
 - https://github.com/qwert12500/2048_rl
