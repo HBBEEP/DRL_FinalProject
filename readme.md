@@ -91,9 +91,9 @@ reward = (boardscore_{new} - boardscore_{old}) + (boardscore_{new} - boardscore_
 
 We also experimented with learning rate scheduling to compare which approach is most suitable with the selected reward terms. We conducted experiments using two training processes: one with a static learning rate of 0.00005, and another which scheduled the learning rate by decreasing its value throughout the training process until reaching the defined minimum learning rate value of approximately 0.000001.
 
-#### Time Skip
+#### Preset Board
 
-description description description
+We hypothesize that the initial states in 2048 are relatively easy to play, and that random actions can occasionally yield rewards. However, these early rewards may have limited value in enhancing the agent's learning. To address this, the agent is initialized from a pre-generated board where higher-value tiles, such as 512 or 1024, are already present, rather than starting from an empty or low-value board.
 
 #### Performance Metrics
 
