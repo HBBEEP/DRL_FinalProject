@@ -89,23 +89,23 @@ We also experimented with learning rate scheduling to compare which approach is 
 
 #### Parameters
 
-`save_path`: Directory path where the trained model and logs will be saved
-`reward_func`: reward function used (`full_score_reward`, `merge_count_reward`, `guide_score_reward`)
-`n_episodes`: Total number of episodes for training
-`hidden_dim`: The number of hidden units in the neural network layers
-`target_update_interval`: Number of episodes between updates of the target network
-`initial_epsilon`: Initial value of epsilon in the epsilon-greedy algorithm
-`epsilon decay`: Decay factor applied to epsilon after each episode. Defines how fast it reduces over time
-`final_epsilon`: Minimum value of epsilon after full decay. Represents the exploitation threshold
-`learning_rate`: Step size for the optimizer during gradient updates
-`discount_factor`: Factor to discount future rewards
-`soft_update`: Boolean to enable soft update of target network
-`use_scheduler`: Boolean to enable scheduler
-`use_preset_board`: Boolean to enable preset_board
-`max_preset_tile`: Defines the highest tile value allowed during initialization
-`tau`: Soft update rate for the target network
-`batch_size`: Number of samples used per training update from the replay buffer
-`batch_size`: Maximum size of the replay buffer 
+- `save_path`: Directory path where the trained model and logs will be saved
+- `reward_func`: reward function used (`full_score_reward`, `merge_count_reward`, `guide_score_reward`)
+- `n_episodes`: Total number of episodes for training
+- `hidden_dim`: The number of hidden units in the neural network layers
+- `target_update_interval`: Number of episodes between updates of the target network
+- `initial_epsilon`: Initial value of epsilon in the epsilon-greedy algorithm
+- `epsilon decay`: Decay factor applied to epsilon after each episode. Defines how fast it reduces over time
+- `final_epsilon`: Minimum value of epsilon after full decay. Represents the exploitation threshold
+- `learning_rate`: Step size for the optimizer during gradient updates
+- `discount_factor`: Factor to discount future rewards
+- `soft_update`: Boolean to enable soft update of target network
+- `use_scheduler`: Boolean to enable scheduler
+- `use_preset_board`: Boolean to enable preset_board
+- `max_preset_tile`: Defines the highest tile value allowed during initialization
+- `tau`: Soft update rate for the target network
+- `batch_size`: Number of samples used per training update from the replay buffer
+- `batch_size`: Maximum size of the replay buffer 
 
 
 Example of YAML parameter settings for each experiment
