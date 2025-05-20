@@ -13,6 +13,10 @@ FRA 503: Deep Reinforcement Learning for Robotics
 
 In this project, we will implement Deep Reinforcement Learning to play the 2048 game using different algorithms: Deep Q-Network, Double Deep Q-Network, and Dueling Deep Q-Network to compare the performance of each algorithm, including differences in reward functions and experimental setups.
 
+## Challenges
+
+A key challenge in training a 2048-playing model is that the states it encounters depend on its current performance. An untrained or weak model often fails early, rarely reaching higher-value tiles like 512 or 1024. As a result, it mostly sees early-game states and struggles to learn strategies for the late game. This slows down training, as the model needs more time and experience to handle advanced scenarios it rarely encounters.
+
 ## Technique
 
 ### Literature review
