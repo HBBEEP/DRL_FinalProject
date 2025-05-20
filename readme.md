@@ -139,6 +139,15 @@ Dueling Deep Q-Network (Dueling DQN) is a reinforcement learning algorithm that 
 Q(s, a, \theta, \beta) = V(s, \theta, \beta) + \left( A(s, a, \theta, \alpha) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s, a'; \theta, \alpha) \right)
 ```
 
+- `Q(s, a; θ, β)` : Combined Q-value output from the network for state `s` and action `a`  
+- `V(s; θ, β)` : Estimated **state-value**; represents how good it is to be in state `s`, regardless of the action  
+- `A(s, a; θ, α)` : Estimated **advantage function**; measures how much better action `a` is compared to other actions in state `s`  
+- `θ` : Shared parameters of the neural network (typically lower layers)  
+- `α` : Parameters specific to the **advantage** stream  
+- `β` : Parameters specific to the **value** stream  
+- `|A|` : Total number of possible actions  
+- `a'` : Action used in the summation over all possible actions for normalization
+
 
 ## Experiment
 
