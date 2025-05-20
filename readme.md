@@ -57,17 +57,87 @@ The game terminates when there are no empty spots left on the board and no furth
 
 ### Algorithms
 
-#### 1. Vanilla DQN 
+#### **1. Vanilla DQN**
 
-description description description
+Deep Q-Network (DQN) is a value-based reinforcement learning algorithm that combines Q-Learning with deep neural networks to enable agents to learn control policies directly from high-dimensional state spaces
 
-#### 2. Double DQN
+- **DQN Network**
 
-description description description
+![image](https://github.com/user-attachments/assets/7f1c21cf-be3f-4ba9-9fa3-2b2866093f39)
 
-#### 3. Dueling DQN 
+- **TD Loss Function**
 
-description description description
+```math
+\text{LossFunction} = Q_{\text{best}}(s_t, a_t) - Q(s_t, a_t)
+```
+
+- **Estimated TD Target**
+  
+```math
+Q_{\text{best}}(s_t, a_t) = R_{t+1} + \gamma \max_{a} Q(s_{t+1}, a)
+```
+
+- **Q-value Update Rule**
+  
+```math
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left( R_{t+1} + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t) \right)
+```
+
+  - `s_t` : Current state at time step *t*  
+  - `a_t` : Action taken at state `s_t`  
+  - `R_{t+1}` : Reward received after taking action `a_t` from state `s_t`  
+  - `s_{t+1}` : Next state after taking action `a_t`  
+  - `Q(s, a)` : Estimated action-value function for state `s` and action `a`  
+  - `Q_{\text{best}}(s_t, a_t)` : Target Q-value for updating at time *t*  
+  - `\gamma` : Discount factor (0 ≤ γ ≤ 1), balancing immediate and future rewards  
+  - `\alpha` : Learning rate (0 ≤ α ≤ 1), controlling the update step size
+
+
+#### **2. Double DQN**
+
+Double Deep Q-Network (Double DQN) is a reinforcement learning algorithm that improves DQN by reducing overestimation of action values. It does this by using the main network to select actions and a separate target network to evaluate their Q-values, leading to more accurate and stable learning.
+
+- **Double DQN Network**
+  is the same with the Vanilla DQN
+
+- Deep Q Network: selecting the best action a with maximum Q-value of next state
+  
+```math
+a = \max_a Q_{net}(s_{t+1}, a)
+```
+
+- Target Network: calculating the estimated Q-value with action a selected above
+
+```math
+q_{estimated} = Q_{tnet}(s_{t+1}, a)
+```
+
+- Update the Q-value of Deep Q Network based on the estimated Q-value from Target Network
+
+```math
+Q_{net}(s_t, a_t) \leftarrow R_{t+1} + \gamma Q_{tnet}(s_{t+1}, a)
+```
+
+- `Q_{net}` : Online Q-network used for action selection and value updates  
+- `Q_{tnet}` : Target Q-network used for stable Q-value estimation  
+- `s_t` : Current state at time *t*  
+- `a_t` : Action taken at state `s_t`  
+- `s_{t+1}` : Next state after taking action `a_t`  
+- `R_{t+1}` : Reward received after taking action `a_t`  
+- `a` : Action selected by online network maximizing Q-value at next state  
+- `\gamma` : Discount factor, balancing immediate and future rewards
+  
+#### **3. Dueling DQN**
+
+Dueling Deep Q-Network (Dueling DQN) is a reinforcement learning algorithm that separates the estimation of state value and advantage for each action within the Q-network architecture.
+
+- **Dueling DQN Network**
+
+![image](https://github.com/user-attachments/assets/475d6a1a-f307-414f-8235-deba32a62e0f)
+
+```math
+Q(s, a, \theta, \beta) = V(s, \theta, \beta) + \left( A(s, a, \theta, \alpha) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s, a'; \theta, \alpha) \right)
+```
 
 
 ## Experiment
@@ -207,3 +277,6 @@ python scripts/train.py --algo DQN --exp experiment_1 --debug False
 ## Reference
 
 - https://github.com/qwert12500/2048_rl
+- https://medium.com/@qempsil0914/zero-to-one-deep-q-learning-part1-basic-introduction-and-implementation-bb7602b55a2c
+- https://medium.com/@qempsil0914/deep-q-learning-part2-double-deep-q-network-double-dqn-b8fc9212bbb2
+- https://github.com/dxyang/DQN_pytorch?tab=readme-ov-file
