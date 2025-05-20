@@ -55,10 +55,6 @@ description description description
 
 ## Experiment
 
-#### Parameters
-
-description description description
-
 #### Reward Functions
 
 We constructed experiments on different reward functions, which were referenced from the literature review and our hypotheses. The reward functions used in this project include:
@@ -90,6 +86,51 @@ reward = (boardscore_{new} - boardscore_{old}) + (boardscore_{new} - boardscore_
 #### Scheduling
 
 We also experimented with learning rate scheduling to compare which approach is most suitable with the selected reward terms. We conducted experiments using two training processes: one with a static learning rate of 0.00005, and another which scheduled the learning rate by decreasing its value throughout the training process until reaching the defined minimum learning rate value of approximately 0.000001.
+
+#### Parameters
+
+`save_path`: Directory path where the trained model and logs will be saved
+`reward_func`: reward function used (`full_score_reward`, `merge_count_reward`, `guide_score_reward`)
+`n_episodes`: Total number of episodes for training
+`hidden_dim`: The number of hidden units in the neural network layers
+`target_update_interval`: Number of episodes between updates of the target network
+`initial_epsilon`: Initial value of epsilon in the epsilon-greedy algorithm
+`epsilon decay`: Decay factor applied to epsilon after each episode. Defines how fast it reduces over time
+`final_epsilon`: Minimum value of epsilon after full decay. Represents the exploitation threshold
+`learning_rate`: Step size for the optimizer during gradient updates
+`discount_factor`: Factor to discount future rewards
+`soft_update`: Boolean to enable soft update of target network
+`use_scheduler`: Boolean to enable scheduler
+`use_preset_board`: Boolean to enable preset_board
+`max_preset_tile`: Defines the highest tile value allowed during initialization
+`tau`: Soft update rate for the target network
+`batch_size`: Number of samples used per training update from the replay buffer
+`batch_size`: Maximum size of the replay buffer 
+
+
+Example of YAML parameter settings for each experiment
+
+```
+DQN : 
+  experiment_1:
+    save_path : output/DQN_policy_exp1
+    reward_func : Full_score
+    n_episodes : 20000
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : true
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+```
 
 #### Preset Board
 
