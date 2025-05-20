@@ -21,7 +21,24 @@ A key challenge in training a 2048-playing model is that the states it encounter
 
 ### Literature review
 
-description description description
+#### [**1. Playing 2048 with Deep Q-Learning (With Pytorch implementation)**](https://medium.com/@qwert12500/playing-2048-with-deep-q-learning-with-pytorch-implementation-4313291efe61)
+This blog provides information about the 2048 game and how to apply reinforcement learning to play it effectively. The post compares a baseline random action play against a Deep Q-learning approach, which estimates Q-values from current states encoded as one-hot tensors of each tile value level.
+
+The blog also provides an example of a network used in Deep Q-learning that incorporates ConvBlocks to extract features from the encoded states using different kernel sizes. These features are then forwarded to linear layers to produce Q-values for each possible action as the network output.
+
+The experiment evaluates performance based on score distribution and maximum tile achieved in each episode. Results show that the Deep Q-learning approach significantly outperforms the random action approach.
+
+#### [**2. Developing Value Networks for Game 2048 with Reinforcement Learning**](https://www.jstage.jst.go.jp/article/ipsjjip/29/0/29_336/_pdf/-char/ja)
+The paper describes an experiment examining various training configurations for the 2048 game task. It presents information about network architecture, state representation (consistent with previous literature), batch size, and additional techniques to improve the training process.
+
+The experiment is divided into several sections, including batch training, exploiting board symmetry, network architecture, network hidden dimension size, and additional strategies such as jump-starting boards with high-value tiles. Results indicate that batch size slightly affects learning performance, with larger batch sizes improving the learning process, while online TD learning shows a significant drop in performance. The network architecture called 'CNN22', described in the paper, provided the best performance. Additionally, the strategy of jump-starting initial states using the restart approach improved learning performance. The paper also documents extended training of approximately 240 hours using the optimal configuration and high-performance hardware.
+
+#### [**3. Reinforcement learning in 2048 game**](https://cogsci.fmph.uniba.sk/~farkas/theses/adrian.goga.bak18.pdf)
+This paper studies the components used in a reinforcement learning system designed to play the 2048 game. It provides information about the basic components of the reinforcement learning environment, neural network definitions, and training techniques. The paper also describes the DQN (Deep-Q Network) family, including vanilla DQN, Double DQN, and Dueling DQN, which can be used in the Deep-Q learning process.
+
+The study defines different reward functions, all based on the number of merged tiles in each environment step, which aim to keep reward values between (-1,1). Two approaches for state encoding are presented: the first converts tile values to powers of 2 (between 1-11) and divides by 11 to normalize values to [0,1]; the second applies the grey code concept for state encoding.
+
+Results show that the experiment using the first type of state encoding, combined with a reward function that divides the number of merged tiles by a defined value, can win the game (achieve a 2048 tile) in 7.8% of 10,000 training episodes, while other approaches failed to reach the 2048 tile.
 
 ### Game Environment 
 
@@ -61,7 +78,7 @@ We constructed experiments on different reward functions, which were referenced 
 
 - **full_score_reward**
   
-From the literature review about "xxxxxx", we use different board scores from the stepping process as reward terms. This represents the impact of tile merges, where merging higher tiles returns more reward to the environment. However, this might cause the network to skip the global minima. The penalty reward term was defined by 'non-valid moves' that subtract 10 from the reward each time a non-valid move occurs.
+From the first and second literature review, we use different board scores from the stepping process as reward terms. This represents the impact of tile merges, where merging higher tiles returns more reward to the environment. However, this might cause the network to skip the global minima. The penalty reward term was defined by 'non-valid moves' that subtract 10 from the reward each time a non-valid move occurs.
 
 ```math
 reward = boardscore_{new} - boardscore_{old}
@@ -69,7 +86,7 @@ reward = boardscore_{new} - boardscore_{old}
 
 - **merge_count_reward**
   
-From another literature review about 'xxxxxx' that applied normalization to the reward term by using the ratio of the number of tiles merged in that step. Building on this idea, we also added a score board term that was calculated as a ratio with the goal score. This represents not only how many tiles were merged in that step but also provides the impact of the tile scores that were merged at that step. The penalty reward term was defined as same as the full_score_reward but reduce subtract value from 10 to 0.01 follow the reward size.
+From the third literature review that applied normalization to the reward term by using the ratio of the number of tiles merged in that step. Building on this idea, we also added a score board term that was calculated as a ratio with the goal score. This represents not only how many tiles were merged in that step but also provides the impact of the tile scores that were merged at that step. The penalty reward term was defined as same as the full_score_reward but reduce subtract value from 10 to 0.01 follow the reward size.
 
 ```math
 reward = \frac{n_{tilesmerged}}{max_{tilesmerge}} + \frac{boardscore_{new}-boardscore_{old}}{boardscore_{max}}
