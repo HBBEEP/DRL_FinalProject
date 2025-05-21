@@ -241,41 +241,32 @@ description description description
 
 description description description
 
-#### 1. DQN 
+
+### Training
+
+#### 1. Comparison across reward function with scheduler on training 
 
 description description description
 
-#### 2. DQN
+#### 2. Comparison across using scheduler with different network & guide score on training
 
 description description description
 
-#### 3. DQN 
+
+### Playing
+
+#### 1. Comparison across reward function with scheduler on playing
 
 description description description
 
-#### 4. Double DQN 
+#### 2. Comparison across using scheduler with different network & guide score on playing
 
 description description description
 
-#### 5. Double DQN
+#### 3. Comparison between preset strategy
 
 description description description
 
-#### 6. Dueling DQN 
-
-description description description
-
-#### 7. Dueling DQN 
-
-description description description
-
-#### 8. DQN
-
-description description description
-
-#### 9. DQN Skip
-
-description description description
 
 ## Example Command
 
