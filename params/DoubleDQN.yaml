@@ -51,15 +51,41 @@ DoubleDQN :
     buffer_size : 50000
 
   play_1:
-    n_episodes : 10
-    policy_network_weight : network_weight
-    target_network_weight : network_weight
-    target_update_interval : 1
-    initial_epsilon : 1.0
-    epsilon_decay : 0.998
-    final_epsilon : 0.05
-    learning_rate : 0.001
+    save_path : play_output\DoubleDQN_guide_no_scheduler
+    n_episodes : 300
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp8_preset_1024\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp8_preset_1024\policy_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
     discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
     tau : 0.95
-    batch_size : 8
-    buffer_size : 100
+    batch_size : 64
+    buffer_size : 50000
+
+  play_2:
+    save_path : play_output\DoubleDQN_guide_scheduler
+    n_episodes : 300
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DoubleDQN_policy_exp2\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DoubleDQN_policy_exp2\policy_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
