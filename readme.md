@@ -343,6 +343,11 @@ In summary, the use of a scheduler, designed to gradually reduce the learning ra
 ![alt text](images/20.png)
 ![alt text](images/21.png)
 
+| Preset | Average Episode Score |
+|-------------|------------------------|
+| 512         | 3518.45                |
+| 1024        | 3211.48                |
+
 In the experiments where the training process began with higher-value preset tiles such as **512** or **1024**, the models showed the ability to learn earlier-stage gameplay patterns that would not normally appear on the board when starting from scratch. This suggests that starting from advanced game states can help the model generalize across different stages of the game.
 
 However, the results showed no significant performance difference between starting from a 512 or 1024 tile. We hypothesize that this is due to the limited number of training episodes (**10,000 episodes**), which may not be sufficient for the model to fully adapt and learn effectively from these preset conditions.
