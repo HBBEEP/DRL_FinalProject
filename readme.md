@@ -239,44 +239,149 @@ description description description
 
 ## Result & Analysis
 
-description description description
 
 
 ### Training
 
 #### 1. Comparison across reward function with scheduler on training 
 
-description description description
+![alt text](images/1.png)
+![alt text](images/2.png)
+![alt text](images/3.png)
+
+From the experiments, the `guide_score` reward function demonstrated the best overall performance compared to the other reward strategies. Both `full_score` and `merge_score` showed no significant difference between each other, but their performance was consistently lower than that of `guide_score`.
+
+When analyzing the distribution of the maximum tiles achieved:
+- `full_score` and `merge_score` mostly resulted in 256 and 512 tiles, respectively.
+- `guide_score` more frequently reached 512 and 1024 tiles.
+- `guide_score` was the only reward function that enabled the agent to reach the 2048 tile.
+
+`guide_score` outperformed all other reward functions in both score and tile progression. Therefore, for all subsequent experiments, we use `guide_score` as the reward function for training.
 
 #### 2. Comparison across using scheduler with different network & guide score on training
 
-description description description
+![alt text](images/4.png)
+![alt text](images/5.png)
+![alt text](images/6.png)
 
+**Average Loss Comparison**
+
+| Method               | With Scheduler | Without Scheduler |
+|----------------------|----------------|-------------------|
+| DQN                  | 5001.82        | 5476.71           |
+| DoubleDQN            | 4497.63        | 4753.83           |
+| DuelingDQN           | 2882.72        | 856.74            |
+
+##### With Scheduler
+In the experiments using a learning rate scheduler, the **Dueling DQN** algorithm performed the best, showing a statistically significant improvement over the others. In contrast, **vanilla DQN** and **Double DQN** did not show significant differences from each other. However, all models trained with the scheduler failed to reach the 2048 tile, with every algorithm reaching only up to the 1024 tile, indicating that none were able to "win" the game under these conditions.
+
+##### Without Scheduler
+In the experiments without a scheduler, all algorithms showed improved performance compared to their counterparts trained with a scheduler. During the early phase of training (before 10,000 episodes), the **Double DQN** algorithm exhibited high fluctuation in performance compared to the others. However, by the end of the training, all algorithms performed similarly and were able to reach the **2048 tile**, marking successful gameplay in this setting.
+
+##### Training Limitations
+Across all experiments, the episode scores did not reach a point of saturation. This suggests that the models had not yet achieved their optimal performance. With longer training (i.e., more episodes), we may observe clearer distinctions in performance between the algorithms.
 
 ### Playing
 
 #### 1. Comparison across reward function with scheduler on playing
 
-description description description
+![alt text](images/7.png)
+![alt text](images/8.png)
+![alt text](images/9.png)
+
+| Reward Function | Average Episode Score |
+|---------------|------------------------|
+| Full_score (DQN)      | 4296.87                |
+| Merge_score (DQN)     | 3913.69                |
+| Guide_score (DQN)     | 9634.60                |
+
+When evaluating the trained models by running them in the game environment, the `guide_score` reward function performed the best, achieving an average episode score of **9634.60**. This result is consistent with its performance during the training phase. In comparison, the models trained with `full_score` and `merge_score` achieved significantly lower average scores of **4296.87** and **3913.69**, respectively, with no meaningful difference between them.
+
+Notably, the `guide_score` model was the only one that successfully reached the **2048 tile**, effectively completing the game. This confirms that `guide_score` is the most effective reward function for training agents in the 2048 environment.
+
 
 #### 2. Comparison across using scheduler with different network & guide score on playing
 
-description description description
+![alt text](images/22.png)
+![alt text](images/23.png)
+![alt text](images/24.png)
+![alt text](images/25.png)
 
-#### 3. Comparison between preset strategy
+| Method                     | With Scheduler | Without Scheduler |
+|----------------------------|----------------|-------------------|
+| DQN Guide Score            | 9634.60        | 10607.68          |
+| DoubleDQN Guide Score      | 4270.24        | 9926.64           |
+| DuelingDQN Guide Score     | 7490.53        | 11343.45          |
 
-description description description
+Focusing on the experiments using a learning rate scheduler, it is apparent that the DoubleDQN algorithm performs the worst among all tested methods. This may be due to the nature of DoubleDQN, which aims to address the overestimation bias present in the vanilla DQN. However, in the context of the 2048 puzzle game, where the game has a large number of stages and a relatively low number of training episodes (20,000), the aggressive exploitation and potential overestimation by the vanilla DQN may actually be more beneficial. Therefore, DoubleDQN’s conservative value estimation could hinder performance in this specific task.
+
+Turning to the DuelingDQN algorithm, which introduces a value function to separately estimate the state value and advantage function, we observe that its training loss values are the lowest among all methods. This suggests that the model is not learning to accumulate high rewards, as reflected in its relatively lower performance. The low loss may indicate that the network is converging to poor policies, potentially due to suboptimal value estimation. Additionally, the scheduler's impact on learning rate might further degrade its learning efficiency. Nevertheless, among the models trained with a scheduler, the top performers in terms of average score are DQN (9634.60), DuelingDQN (7490.53), and DoubleDQN (4270.24), in that order.
+
+In contrast, the experiments without the scheduler show less significant performance differences among the models. DuelingDQN, vanilla DQN, and DoubleDQN achieved average scores of 11,343.45, 10,607.68, and 9,926.64 respectively. The results suggest that without the scheduler, all three methods perform relatively similarly, and no single approach demonstrates a clear advantage. This could be attributed to the limited number of training episodes, which may not be sufficient to fully realize the benefits of each algorithm’s design.
+
+In summary, the use of a scheduler, designed to gradually reduce the learning rate from 0.00005 to 0.000001 over the course of training—appears to negatively impact performance in this context. Although the intention is to fine-tune learning as training progresses, the learning rate at later stages may become too small to allow effective updates, especially in a complex task like 2048. As a result, the model might fail to adapt and improve in the final stages of training, leading to lower overall performance when a scheduler is used.
 
 
-## Example Command
+##### 2.1 DQN
+![alt text](images/10.png)
+![alt text](images/11.png)
+![alt text](images/12.png)
 
-```
+##### 2.2 Double DQN
+![alt text](images/13.png)
+![alt text](images/14.png)
+![alt text](images/15.png)
+
+##### 2.3 Dueling DQN
+![alt text](images/16.png)
+![alt text](images/17.png)
+![alt text](images/18.png)
+
+#### 3. Comparison between preset strategy [EXTRA]
+
+![alt text](images/19.png)
+![alt text](images/20.png)
+![alt text](images/21.png)
+
+In the experiments where the training process began with higher-value preset tiles such as **512** or **1024**, the models showed the ability to learn earlier-stage gameplay patterns that would not normally appear on the board when starting from scratch. This suggests that starting from advanced game states can help the model generalize across different stages of the game.
+
+However, the results showed no significant performance difference between starting from a 512 or 1024 tile. We hypothesize that this is due to the limited number of training episodes (**10,000 episodes**), which may not be sufficient for the model to fully adapt and learn effectively from these preset conditions.
+
+## Running Training Experiments
+
+You can train different reinforcement learning agents by specifying the algorithm, experiment name, and whether to enable debug mode for real-time visualization.
+
+### Command-Line Arguments
+
+- `--algo`: Specifies the algorithm to use. Supported values are:
+  - `DQN`
+  - `DoubleDQN`
+  - `DuelingDQN`
+
+- `--exp`: Defines the name of the experiment. This is used to organize logs, models, and results.
+
+- `--debug`: Enables or disables debug mode. Set to `True` to visualize the current game board during training.
+
+### Example Command
+
+```bash
 python scripts/train.py --algo DQN --exp experiment_1 --debug False
 ```
 
 ## Reference
 
-- https://github.com/qwert12500/2048_rl
-- https://medium.com/@qempsil0914/zero-to-one-deep-q-learning-part1-basic-introduction-and-implementation-bb7602b55a2c
-- https://medium.com/@qempsil0914/deep-q-learning-part2-double-deep-q-network-double-dqn-b8fc9212bbb2
-- https://github.com/dxyang/DQN_pytorch?tab=readme-ov-file
+Amber. (2019a, April 9). (Deep) Q-learning, Part1: basic introduction and implementation. Medium. https://medium.com/@qempsil0914/zero-to-one-deep-q-learning-part1-basic-introduction-and-implementation-bb7602b55a2c
+
+Amber. (2019b, April 26). Deep Q-Learning, Part2: Double Deep Q network, (double DQN). Medium. https://medium.com/@qempsil0914/deep-q-learning-part2-double-deep-q-network-double-dqn-b8fc9212bbb2
+
+Bachelor thesis. (n.d.). Reinforcement learning in 2048 game. Uniba.Sk. Retrieved May 22, 2025, from https://cogsci.fmph.uniba.sk/~farkas/theses/adrian.goga.bak18.pdf
+
+Chan, L. H. (n.d.). 2048_rl: Reinforcement Learning Model playing 2048.
+
+Matsuzaki, K. (2021). Developing value networks for game 2048 with reinforcement learning. Journal of Information Processing, 29(0), 336–346. https://doi.org/10.2197/ipsjjip.29.336
+
+Yang, D. (n.d.). DQN_pytorch: Vanilla DQN, Double DQN, and Dueling DQN implemented in PyTorch.
+
+
+
+
