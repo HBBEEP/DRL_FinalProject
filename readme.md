@@ -256,9 +256,9 @@ When analyzing the distribution of the maximum tiles achieved:
 
 #### 2. Comparison across using scheduler with different network & guide score on training
 
-![alt text](images/4.png)
-![alt text](images/5.png)
-![alt text](images/6.png)
+![image](https://github.com/user-attachments/assets/ab50f417-f036-42dd-92d0-4b3a003b5f51)
+![5](https://github.com/user-attachments/assets/284bb19d-db98-4e1d-992f-d43f4f7ff12f)
+![6](https://github.com/user-attachments/assets/9858a09a-3512-4e44-8db5-9641deeb0256)
 
 **Average Loss Comparison**
 
