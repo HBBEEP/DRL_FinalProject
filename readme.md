@@ -381,6 +381,8 @@ Chan, L. H. (n.d.). 2048_rl: Reinforcement Learning Model playing 2048.
 
 Matsuzaki, K. (2021). Developing value networks for game 2048 with reinforcement learning. Journal of Information Processing, 29(0), 336–346. https://doi.org/10.2197/ipsjjip.29.336
 
+Medium. (n.d.). Medium. Retrieved May 22, 2025, from https://markelsanz14.medium.com/introduction-to-reinforcement-learning-part-4-double-dqn-and-dueling-dqn-b349c9a61ea1l
+
 Yang, D. (n.d.). DQN_pytorch: Vanilla DQN, Double DQN, and Dueling DQN implemented in PyTorch.
 
 
