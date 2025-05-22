@@ -256,9 +256,9 @@ When analyzing the distribution of the maximum tiles achieved:
 
 #### 2. Comparison across using scheduler with different network & guide score on training
 
-![image](https://github.com/user-attachments/assets/ab50f417-f036-42dd-92d0-4b3a003b5f51)
-![5](https://github.com/user-attachments/assets/284bb19d-db98-4e1d-992f-d43f4f7ff12f)
-![6](https://github.com/user-attachments/assets/9858a09a-3512-4e44-8db5-9641deeb0256)
+![alt text](images/4.png)
+![alt text](images/5.png)
+![alt text](images/6.png)
 
 **Average Loss Comparison**
 
@@ -301,8 +301,7 @@ Notably, the `guide_score` model was the only one that successfully reached the 
 ![alt text](images/22.png)
 ![alt text](images/23.png)
 ![alt text](images/24.png)
-![25](https://github.com/user-attachments/assets/2cef6247-3ceb-4491-b321-75a906e4f2c9)
-
+![alt text](images/25.png)
 
 | Method                     | With Scheduler | Without Scheduler |
 |----------------------------|----------------|-------------------|
