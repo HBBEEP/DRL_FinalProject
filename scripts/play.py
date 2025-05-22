@@ -132,7 +132,7 @@ for episode in range(selected_config['n_episodes']):
         state = next_state
 
         if debug_flag:
-            board_visualizer.update(board_env.board,score=board_env.total_score)
+            board_visualizer.update(board_env.board,score=board_env.total_score,delay=0.02)
 
         if done:
             board_visualizer.done()

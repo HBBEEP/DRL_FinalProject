@@ -289,3 +289,63 @@ DQN :
     tau : 0.95
     batch_size : 64
     buffer_size : 50000
+
+  play_7:
+    save_path : play_output\DQN_record
+    n_episodes : 300
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp9_guide_no_sheduler\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp9_guide_no_sheduler\policy_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+
+  play_8:
+    save_path : play_output\DQN_record_full_score
+    n_episodes : 300
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp1\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp1\policy_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
+
+  play_9:
+    save_path : play_output\DQN_record_merge_score
+    n_episodes : 300
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp2\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp2\policy_best.pth
+    hidden_dim : 2048
+    target_update_interval : 20
+    initial_epsilon : 0.9
+    epsilon_decay : 0.985
+    final_epsilon : 0.01
+    learning_rate : 0.00005
+    discount_factor :  0.99
+    soft_update : false
+    use_scheduler : false
+    use_preset_board : false
+    max_preset_tile : 4
+    tau : 0.95
+    batch_size : 64
+    buffer_size : 50000
