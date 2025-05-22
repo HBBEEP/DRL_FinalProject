@@ -53,8 +53,8 @@ DoubleDQN :
   play_1:
     save_path : play_output\DoubleDQN_guide_no_scheduler
     n_episodes : 300
-    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp8_preset_1024\policy_best.pth
-    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DQN_policy_exp8_preset_1024\policy_best.pth
+    policy_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DoubleDQN_policy_exp3\policy_best.pth
+    target_network_weight : C:\STORAGE\FIBO\Sem_4_2\DRL\DRL_final\DoubleDQN_policy_exp3\policy_best.pth
     hidden_dim : 2048
     target_update_interval : 20
     initial_epsilon : 0.9
