@@ -232,10 +232,6 @@ DQN :
 
 We hypothesize that the initial states in 2048 are relatively easy to play, and that random actions can occasionally yield rewards. However, these early rewards may have limited value in enhancing the agent's learning. To address this, the agent is initialized from a pre-generated board where higher-value tiles, such as 512 or 1024, are already present, rather than starting from an empty or low-value board.
 
-#### Performance Metrics
-
-description description description
-
 
 ## Result & Analysis
 
