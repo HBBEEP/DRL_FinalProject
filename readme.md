@@ -259,6 +259,7 @@ When analyzing the distribution of the maximum tiles achieved:
 ![alt text](images/4.png)
 ![alt text](images/5.png)
 ![alt text](images/6.png)
+![alt text](images/25.png)
 
 **Average Loss Comparison**
 
@@ -269,7 +270,7 @@ When analyzing the distribution of the maximum tiles achieved:
 | DuelingDQN           | 2882.72        | 856.74            |
 
 ##### With Scheduler
-In the experiments using a learning rate scheduler, the **Dueling DQN** algorithm performed the best, showing a statistically significant improvement over the others. In contrast, **vanilla DQN** and **Double DQN** did not show significant differences from each other. However, all models trained with the scheduler failed to reach the 2048 tile, with every algorithm reaching only up to the 1024 tile, indicating that none were able to "win" the game under these conditions.
+In the experiments using a learning rate scheduler,  **Vanilla DQN** performed the best, while **Dueling DQN** performed worse than  **Vanilla DQN**, and  **Double DQN** performed the worst. However, only **Vanilla DQN** managed to reach the 2048 tile; all other models trained with the scheduler reached only up to the 1024 tile, indicating that none,except **Vanilla DQN**,were able to "win" the game under these conditions.
 
 ##### Without Scheduler
 In the experiments without a scheduler, all algorithms showed improved performance compared to their counterparts trained with a scheduler. During the early phase of training (before 10,000 episodes), the **Double DQN** algorithm exhibited stronger increasing trend in performance compared to the others. However, by the end of the training, all algorithms performed similarly and were able to reach the **2048 tile**, marking successful gameplay in this setting.
@@ -301,7 +302,6 @@ Notably, the `guide_score` model was the only one that successfully reached the 
 ![alt text](images/22.png)
 ![alt text](images/23.png)
 ![alt text](images/24.png)
-![alt text](images/25.png)
 
 | Method                     | With Scheduler | Without Scheduler |
 |----------------------------|----------------|-------------------|
