@@ -301,7 +301,8 @@ Notably, the `guide_score` model was the only one that successfully reached the 
 ![alt text](images/22.png)
 ![alt text](images/23.png)
 ![alt text](images/24.png)
-![alt text](images/25.png)
+![25](https://github.com/user-attachments/assets/2cef6247-3ceb-4491-b321-75a906e4f2c9)
+
 
 | Method                     | With Scheduler | Without Scheduler |
 |----------------------------|----------------|-------------------|
